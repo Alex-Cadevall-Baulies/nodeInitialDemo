@@ -25,6 +25,14 @@
             input.value = '';
         }
     })
+    
+    socket.on('chat message', function(message) {
+    var item = document.createElement('li'); // document.createElement() method creates the HTML element specified by tagName, or an HTMLUnknownElement if tagName isn't recognized.
+    item.textContent = message;
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+    });
+
     </script>
 </body>
 </html>
