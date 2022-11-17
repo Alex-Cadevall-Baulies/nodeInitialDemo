@@ -15,3 +15,14 @@ Per superar aquest nivell pots afegir diferents opcions:
 - Afegeix la personalització del frontend que vulguis.
 - Realitza el frontend amb algun framework (React, Vue, Angular).
 - Efectua el projecte amb TypeScript.
+
+## Documentació: 
+- Socket.io : https://socket.io/get-started/chat
+
+## Installs:
+- express [`npm i express`]
+- socket.io [`npm i socket.io`]
+
+## Per executar:
+- npm i (`instalar les dependencies del package.json`)
+- npm start
