@@ -33,6 +33,18 @@
     window.scrollTo(0, document.body.scrollHeight);
     });
 
+    let count = 0
+    setInterval(() => {
+        socket.volatile.emit('ping', ++count)
+    }, 5000)
+
+    document.addEventListener('keydown', e => {
+        if(e.target.matches('input')) return
+
+        if(e.key === 'c') socket.connect()
+        if (e.key === 'd') socket.disconnect()
+    })
+
     </script>
 </body>
 </html>
