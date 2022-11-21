@@ -1,31 +1,34 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app)
-const { Server } = require("socket.io")
-const io = new Server(server)
+const form = document.getElementById('form');
+const input = document.getElementById('message-input');
 
-app.get('/',(req, res) => {
-    res.sendFile(__dirname + '/helpers/index.html')
-});
+form.addEventListener('submit', event =>{
+    //if the event does not get explicitly handled, its default action should not be taken.
+    event.preventDefault();
+    const message = input.value
 
-io.on('connection', (socket) => {
-    console.log('user connected');
-    console.log(socket.io);
-    
-    socket.broadcast.emit('hi')
+    if(message === "") return //if inpu.value = blank, return nothing
+    displayMessage(message)
 
-    socket.on('chat message', (message) => {
-        console.log(`message: ${message}`)
-    });
+    input.value = "" //clear input value
+})
 
-    socket.on('ping', n => console.log(n))
+function displayMessage(message) {
+    const div = document.createElement("div")
+    div.textContent = message
 
-    socket.on('disconnect', () => {
-        console.log('user disconnected')
-    });
-});
+    //add element to div
+    document.getElementById("message-container").append(div)
+    window.scrollTo(0, document.body.scrollHeight)
+}
 
-server.listen(3000, () => {
-    console.log('listening on http://localhost:3000')
-});
+/*let count = 0
+    setInterval(() => {
+        socket.volatile.emit('ping', ++count)
+    }, 5000)
+
+    document.addEventListener('keydown', e => {
+        if(e.target.matches('input')) return
+
+        if(e.key === 'c') socket.connect()
+        if (e.key === 'd') socket.disconnect()
+    })*/
