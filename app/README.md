@@ -18,6 +18,7 @@ Per superar aquest nivell pots afegir diferents opcions:
 
 ## Documentació: 
 - Socket.io : https://socket.io/get-started/chat
+- VUE: https://www.youtube.com/playlist?list=PL4cUxeGkcC9hYYGbV60Vq3IXYNfDk8At1
 
 ## Installs:
 - express [`npm i express`]
