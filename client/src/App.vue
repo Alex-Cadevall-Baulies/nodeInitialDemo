@@ -8,6 +8,19 @@
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import SocketioService from './services/socketio.js';
+
+export default {
+  name: 'App',
+  components: {},
+  created() {
+    console.log('I am here')
+    SocketioService.setupSocketConnection();
+  },
+  beforeUnmount() {
+    SocketioService.disconnect();
+  }
+}
 </script>
 
 <style>

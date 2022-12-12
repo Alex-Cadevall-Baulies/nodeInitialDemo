@@ -1,10 +1,11 @@
 const express = require('express');
 const app = express();
+const http = require('http').createServer(app);
 const PORT = process.env.PORT || 8080;
 const path = require('path');
-const io = require("socket.io")({
+const io = require("socket.io")(http, {
     cors: {
-        origin: `http://localhost:${PORT}`
+        origin: `http://localhost:5173/`
     }
 });
 
@@ -15,6 +16,9 @@ app.get('/', (req, res) => {
 
   io.on('connection', (socket) => {
     console.log(`a user with id ${socket.id} connected`);
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
   });
 
 app.listen(PORT, () =>console.log(`Running on http://localhost:${PORT}`))
