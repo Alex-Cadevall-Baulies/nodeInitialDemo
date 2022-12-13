@@ -8,6 +8,10 @@ class SocketioService {
       this.socket = io('http://localhost:8080');
     }
 
+    socketMessage(msg) {
+      this.socket.emit('message', msg);
+    }
+
     disconnect() {
         if (this.socket) {
             this.socket.disconnect();

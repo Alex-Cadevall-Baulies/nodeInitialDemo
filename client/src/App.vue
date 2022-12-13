@@ -14,7 +14,6 @@ export default {
   name: 'App',
   components: {},
   created() {
-    console.log('I am here')
     SocketioService.setupSocketConnection();
   },
   beforeUnmount() {

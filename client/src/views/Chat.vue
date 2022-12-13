@@ -3,14 +3,43 @@
         This is the chat page
     </h1>
 
-    <ul id="messages"></ul>
+    <ul id="chat" ></ul>
 
-    <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
+    <form id="form" action="" @submit.prevent="sendMessage">
+        <input id="input" autocomplete="off" required v-model="message"/>
+        <button>Send</button>
     </form>
 </template>
 
 <script>
+import SocketioService from '../services/socketio'
+
+export default {
+    data () {
+        return {
+            chat: '',
+            message: ''
+        } 
+    },
+
+    methods: {
+        sendMessage () {
+            if (this.message) {
+                SocketioService.socketMessage(this.message)
+                this.message = '';
+        }
+        },
+
+        addMessage() {
+            socket.on('message', function(msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+            });
+        }
+    }
+}
 </script>
 
 <style>
