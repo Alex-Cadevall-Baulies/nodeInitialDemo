@@ -20,8 +20,13 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log(`a user with id ${socket.id} connected`);
     socket.on('disconnect', () => {
-      console.log('user disconnected');
+      console.log(`user with id ${socket.id} disconnected`);
     });
+    socket.on('message', (msg) => {
+        //event name message is the same as the one in client/socketio.js
+        io.emit('message', msg)
+        console.log(`user ${socket.id} message: ${msg}`);
+      });
   });
 
 http.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`))

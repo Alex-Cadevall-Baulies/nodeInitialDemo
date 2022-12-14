@@ -1,22 +1,10 @@
 import { io } from 'socket.io-client';
 
-class SocketioService {
-    socket;
-    constructor() {}
-  
-    setupSocketConnection() {
-      this.socket = io('http://localhost:8080');
-    }
+const PORT = 8080;
+const socket = io(`http://localhost:${PORT}`,{ autoConnect: false })
 
-    socketMessage(msg) {
-      this.socket.emit('message', msg);
-    }
+socket.onAny((event, ...args) => {
+  console.log(event, args);
+});
 
-    disconnect() {
-        if (this.socket) {
-            this.socket.disconnect();
-        }
-    }
-  }
-  
-  export default new SocketioService();
+  export default socket

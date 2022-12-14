@@ -2,22 +2,27 @@
     <h1>
         This is the landing page
     </h1>
-    <RouterLink :to="{ name: 'chat'}"> Chat View </RouterLink>
-    <RouterView />
+    <button @click="redirect">Chat Here</button>
 </template>
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-import SocketioService from './services/socketio.js';
+import socket from './services/socketio.js';
 
 export default {
-  name: 'App',
+name: 'App',
   components: {},
+  methods: {
+    redirect() {
+      this.$router.push({name : 'chat'})
+    }
+  },
   created() {
-    SocketioService.setupSocketConnection();
+    socket.connect()
   },
   beforeUnmount() {
-    SocketioService.disconnect();
+    if(socket)
+    socket.disconnect()
   }
 }
 </script>

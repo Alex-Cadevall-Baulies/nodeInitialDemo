@@ -3,7 +3,7 @@
         This is the chat page
     </h1>
 
-    <ul id="chat" ></ul>
+    <ul id="chat"></ul>
 
     <form id="form" action="" @submit.prevent="sendMessage">
         <input id="input" autocomplete="off" required v-model="message"/>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import SocketioService from '../services/socketio'
+import socket from '../services/socketio'
 
 export default {
     data () {
@@ -25,20 +25,28 @@ export default {
     methods: {
         sendMessage () {
             if (this.message) {
-                SocketioService.socketMessage(this.message)
+                socket.emit('message', this.message)
                 this.message = '';
         }
         },
 
-        addMessage() {
+     /*   addMessage() {
             socket.on('message', function(msg) {
             var item = document.createElement('li');
             item.textContent = msg;
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
             });
-        }
-    }
+        }*/
+    },
+
+    created() {
+    socket.connect()
+  },
+  beforeUnmount() {
+    if(socket)
+    socket.disconnect()
+  }
 }
 </script>
 
