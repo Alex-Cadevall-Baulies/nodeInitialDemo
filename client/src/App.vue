@@ -1,8 +1,10 @@
 <template>
-    <h1>
-        This is the landing page
-    </h1>
-    <button @click="redirect">Chat Here</button>
+ <div id="wrapper">
+  <nav>
+    <button @click="redirect">To Chat</button>
+  </nav>
+  <router-view />
+ </div>   
 </template>
 
 <script>
