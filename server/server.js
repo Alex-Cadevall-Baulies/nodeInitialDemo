@@ -22,10 +22,13 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       console.log(`user with id ${socket.id} disconnected`);
     });
-    socket.on('message', (msg) => {
-        //event name message is the same as the one in client/socketio.js
-        io.emit('message', msg)
+    
+    socket.on('sendMessage', (msg, room) => {
+        // each time we receive a message from the frontend we log it into backend console
         console.log(`user ${socket.id} message: ${msg}`);
+        
+        //we will now emit it to all front end users
+            io.emit('message', msg) 
       });
   });
 

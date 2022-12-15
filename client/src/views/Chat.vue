@@ -3,55 +3,67 @@
         This is the chat page
     </h1>
 
-    <ul id="chat"></ul>
+    <div id="chat">
+    <div v-for="interaction in chat" :key="interaction">
+    <span>{{interaction}}</span>
+    </div>
+    </div>
 
-    <form id="form" action="" @submit.prevent="sendMessage">
-        <input id="input" autocomplete="off" required v-model="message"/>
+    <div id="messageBar">
+    <form id="messageForm" action="" @submit.prevent="sendMessage">
+        <input id="input" autocomplete="off" required v-model="newMessage" />
         <button>Send</button>
     </form>
+    </div>
+
+    <div id="roomBar">
+    <form id="roomForm" action="">
+        <input id="input" autocomplete="off" required v-model="room" />
+        <button>Join Room</button>
+    </form>
+    </div>
 </template>
 
 <script>
 import socket from '../services/socketio'
 
 export default {
-    data () {
+    data() {
         return {
-            chat: '',
-            message: ''
-        } 
+            chat: [],
+            newMessage: '',
+            room: ''
+        }
     },
 
     methods: {
-        sendMessage () {
-            if (this.message) {
-                socket.emit('message', this.message)
-                this.message = '';
-        }
+        sendMessage() {
+            if (this.newMessage) {
+                socket.emit('sendMessage', this.newMessage, this.room)
+                this.newMessage = '';
+            }
         },
-
-     /*   addMessage() {
-            socket.on('message', function(msg) {
-            var item = document.createElement('li');
-            item.textContent = msg;
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-            });
-        }*/
     },
 
     created() {
-    socket.connect()
-  },
-  beforeUnmount() {
-    if(socket)
-    socket.disconnect()
-  }
+        socket.connect()
+    },
+
+    mounted() {
+        socket.on('message', async (msg) => {
+            this.chat.push(await msg)
+        })
+    },
+
+    beforeUnmount() {
+        if (socket)
+            socket.disconnect()
+    }
 }
 </script>
 
 <style>
-#form {
+#messageForm {
     background: rgba(0, 0, 0, 0.15);
     padding: 0.25rem;
     position: fixed;
@@ -76,7 +88,7 @@ export default {
     outline: none;
 }
 
-#form>button {
+#messageForm>button {
     background: #333;
     border: none;
     padding: 0 1rem;
