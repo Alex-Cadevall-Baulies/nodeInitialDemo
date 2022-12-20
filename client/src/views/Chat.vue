@@ -2,6 +2,8 @@
     <h1>
         This is the chat page
     </h1>
+    <p> Current room: {{ currentRoom }}</p>
+    <button @click="leaveRoom">Leave Room</button>
 
     <div id="chat">
     <div v-for="interaction in chat" :key="interaction">
@@ -17,8 +19,8 @@
     </div>
 
     <div id="roomBar">
-    <form id="roomForm" action="">
-        <input id="input" autocomplete="off" required v-model="room" />
+    <form id="roomForm" action="" @submit.prevent="enterRoom">
+        <input id="input" autocomplete="off" v-model="room" />
         <button>Join Room</button>
     </form>
     </div>
@@ -32,7 +34,8 @@ export default {
         return {
             chat: [],
             newMessage: '',
-            room: ''
+            room: '', 
+            currentRoom: 'main'
         }
     },
 
@@ -43,6 +46,16 @@ export default {
                 this.newMessage = '';
             }
         },
+        enterRoom() {
+            if(this.room) {
+                socket.emit('joinRoom', this.room)
+                this.currentRoom = this.room
+            }
+        },
+        leaveRoom(){
+            this.room = '',
+            this.currentRoom = 'main'
+        }
     },
 
     created() {
@@ -50,7 +63,7 @@ export default {
     },
 
     mounted() {
-        socket.on('message', async (msg) => {
+        socket.on('showMessage', async (msg) => {
             this.chat.push(await msg)
         })
     },

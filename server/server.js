@@ -26,10 +26,20 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (msg, room) => {
         // each time we receive a message from the frontend we log it into backend console
         console.log(`user ${socket.id} message: ${msg}`);
-        
         //we will now emit it to all front end users
-            io.emit('message', msg) 
+        if(room !== "") {
+        io.to(room).emit('showMessage', msg)
+        console.log(`user ${socket.id} joined: ${room}`)
+        }
+        else {
+        io.emit('showMessage', msg)
+        }
       });
+
+    socket.on('joinRoom', (room) => {
+        socket.join(room)
+        console.log(`you joined ${room}`)
+    })
   });
 
 http.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`))
