@@ -3,6 +3,17 @@ const app = express();
 const PORT = 8080;
 const http = require('http').createServer(app);
 const path = require('path');
+
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose")
+
+mongoose.set("strictQuery", false);
+mongoose.connect(`http://localhost:${PORT}`, () =>{
+  console.log(`database connected`)
+},
+e => console.error(e)
+)
+
 const io = require("socket.io")(http, {
     cors: {
         origins: "`http://localhost:5173/`"
