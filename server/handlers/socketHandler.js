@@ -24,10 +24,4 @@ const socketHandler = (io, socket) => {
   })
 }
 
-/* => {
-    console.log(`a user with id ${socket.id} connected`);
-    socket.on('disconnect', () => {
-      console.log(`user with id ${socket.id} disconnected`);
-    });*/
-
 module.exports = socketHandler

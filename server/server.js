@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const http = require('http').createServer(app);
+require('dotenv').config('./.env')
 
 const cors = require('cors')
 app.use(cors())
@@ -14,7 +15,7 @@ const io = require("socket.io")(http, {
 });
 
 //we require our socket middleware from where we'll fire the socket.on commands
-const socketHandler = require('./socketHandler')
+const socketHandler = require('./handlers/socketHandler')
 //set up a function to pass socket and io with hhtp server to use
 const fireSocket = (socket) => {
   socketHandler(io, socket)
@@ -22,14 +23,18 @@ const fireSocket = (socket) => {
 //when user connects io fires and calls for fireSocket
 io.on('connection', fireSocket)
 
-const bodyParser = require("body-parser");
+//We require mongoose and connect database
 const mongoose = require("mongoose")
-
 mongoose.set("strictQuery", false);
-mongoose.connect(`http://localhost:${PORT}`, () =>{
-  console.log(`database connected`)
-},
-e => console.error(e)
-)
+//database address on .env in main folder
+mongoose.connect(process.env.DATABASE_USER, {useNewUrlParser: true})
+const db = mongoose.connection
+
+db.on('error', (error) => console.log(error))
+db.once('open', () => console.log(`database connected`))
+
+const bodyParser = require("body-parser");
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 http.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`))
