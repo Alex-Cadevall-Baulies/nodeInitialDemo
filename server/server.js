@@ -7,6 +7,10 @@ require('dotenv').config('./.env')
 const cors = require('cors')
 app.use(cors())
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 //we setup our socket by passing our http and frontend port
 const io = require("socket.io")(http, {
   cors: {
@@ -15,7 +19,7 @@ const io = require("socket.io")(http, {
 });
 
 //we require our socket middleware from where we'll fire the socket.on commands
-const socketHandler = require('./handlers/socketHandler')
+const socketHandler = require('./sockets/socketHandler')
 //set up a function to pass socket and io with hhtp server to use
 const fireSocket = (socket) => {
   socketHandler(io, socket)
@@ -23,18 +27,12 @@ const fireSocket = (socket) => {
 //when user connects io fires and calls for fireSocket
 io.on('connection', fireSocket)
 
-//We require mongoose and connect database
-const mongoose = require("mongoose")
-mongoose.set("strictQuery", false);
-//database address on .env in main folder
-mongoose.connect(process.env.DATABASE_USER, {useNewUrlParser: true})
-const db = mongoose.connection
+//We require database to connect to our mongodb database
+require('./databaseConnection')
 
-db.on('error', (error) => console.log(error))
-db.once('open', () => console.log(`database connected`))
-
-const bodyParser = require("body-parser");
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+//router usage
+app.use('/', require('./routes/index'))
+app.use('/user', require('./routes/user'))
+app.use('/chat', require('./routes/chat'))
 
 http.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`))

@@ -6,6 +6,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      component: () => import('../views/LogIn.vue')
+    },
+    {
+      path: '/singup',
+      name: 'singup',
+      component: () => import('../views/SignUp.vue')
     },
     {
       path: '/chat',

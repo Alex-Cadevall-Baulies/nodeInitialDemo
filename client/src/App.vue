@@ -1,8 +1,5 @@
 <template>
  <div id="wrapper">
-  <nav>
-    <button @click="redirect">To Chat</button>
-  </nav>
   <router-view />
  </div>   
 </template>
