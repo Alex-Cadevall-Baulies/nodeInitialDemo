@@ -13,16 +13,26 @@
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import dataService from '../services/dataService'
 
 export default {
     data() {
         return {
             username: "",
+            nickname: "",
             password: ""
         }
     },
 
     methods: {
+        async create() {
+            await dataService.create({
+                "username": this.username,
+                "nickname": this.nickname,
+                "password": this.password
+            })
+            alert(`Welcome ${this.nickname}`)
+        }
     },
 }
 </script>
