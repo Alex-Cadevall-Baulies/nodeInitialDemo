@@ -31,7 +31,6 @@ io.on('connection', fireSocket)
 require('./databaseConnection')
 
 //router usage
-app.use('/', require('./routes/index'))
 app.use('/user', require('./routes/user'))
 app.use('/chat', require('./routes/chat'))
 
