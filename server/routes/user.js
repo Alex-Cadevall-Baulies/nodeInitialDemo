@@ -13,25 +13,25 @@ router.post('/', async (req, res) => {
     console.log(req.body)
 
     //We check if username is already taken
-    await User.findOne({username : username
-    }).then(user => {
-        if (user) {
-            res.status(400).json({
-                msg: "Username already registered"
-            })
-        }
-    });
+    const usernameCheck = await User.findOne({username : username
+    })
+    
+    if (usernameCheck) {
+        return res.status(400).json({
+            msg: "Username already registered"
+            }) 
+    }
 
     //We check if nickname is already taken
-    await User.findOne({nickname : nickname
-    }).then(user => {
-        if (user) {
-            res.status(400).json({
+    const nicknameCheck = await User.findOne({nickname : nickname
+    })
+
+    if (nicknameCheck) {
+            return res.status(400).json({
                 msg: "Nickname already registered"
             })
-        }
-    });
-
+    }
+    
     let id = await User.countDocuments()
     console.log(id)
 
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
     user.save()
 })
 
-router.get('/login', async (req, res) => {
+router.get('/', async (req, res) => {
     let userList = await User.find({})
     res.send(userList)
     console.log(userList)
