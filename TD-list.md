@@ -11,9 +11,10 @@
 - create rooms [x]
     - Show rooms joined in the left [] (array and database)
     - Allow user to delete them []
-- create login page []
-- create sing up page []
-- create database to store data []
+- create login page [x]
+- create sing up page [x]
+- create database to store data [x]
+- link database to log-in / singup []
 - identify user by token []
 - allow logout []
 - create user account [] (add image, change name, emojis...)
@@ -27,5 +28,9 @@ https://www.bezkoder.com/vue-node-express-mongodb-mevn-crud/#Configure_MongoDB_d
 https://www.youtube.com/watch?v=fgTGADljAeg&t=188s&ab_channel=WebDevSimplified
 https://www.bezkoder.com/serve-vue-app-express/
 https://www.youtube.com/watch?v=et4t5yS9Hgk&ab_channel=FaztCode
+
+currently:
+https://www.youtube.com/watch?v=1NrHkjlWVhM&ab_channel=WebDevSimplified
+https://www.youtube.com/watch?v=F9cvPtMI7JI&ab_channel=TheCodebookInc.
 
 
