@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router()
-const jwt = require('jsonwebtoken')
 const User = require('../databases/userdb')
 
 //hash password
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
+//activate jsonwebtoken
+const jwt = require('jsonwebtoken')
 
 router.post('/', async (req, res) => {
     //we receive information from frontEnd thanks to axios
@@ -65,7 +67,7 @@ router.post('/login' , async (req, res) => {
     })
     console.log(usernameCheck)
 
-    if(!usernameCheck) res.status(400).json({msg: 'User not registered'})
+    if(!usernameCheck) res.status(400).json({msg: 'User not found'})
     
     if(usernameCheck) {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
