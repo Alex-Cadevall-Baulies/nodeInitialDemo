@@ -3,6 +3,10 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 const User = require('../databases/userdb')
 
+//hash password
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 router.post('/', async (req, res) => {
     //we receive information from frontEnd thanks to axios
     let {
@@ -31,23 +35,48 @@ router.post('/', async (req, res) => {
                 msg: "Nickname already registered"
             })
     }
+
+    //If checks work we hash the password and send it to create user
+    const hash = await bcrypt.hashSync(password, saltRounds);
+    console.log(`this is the ${hash}`)
     
     let id = await User.countDocuments()
     console.log(id)
 
     //If all okay we create new user
-    const user = new User({
+    const user = await new User({
         _id: id,
         username,
         nickname,
-        password
+        password: hash
     })
 
     user.save()
 })
 
+router.post('/login' , async (req, res) => {
+    let {
+        username,
+        password
+    } = req.body
+
+    const usernameCheck = await User.findOne({username : username
+    })
+
+    if(!usernameCheck) res.send(400).json({msg: 'User not registered'})
+    
+    if(usernameCheck) {
+        const validatePassword = await bcrypt.compare(password, usernameCheck.password)
+        if(validatePassword){
+            res.status(200).json({msg: `Valid password, welcome ${usernameCheck.username}`})
+        }
+        else res.status(400).json({msg: 'Wrong password'})
+    }
+})
+
 router.get('/', async (req, res) => {
     let userList = await User.find({})
+    if (userList.length == 0) return res.send(`0 usuaris registrats`)
     res.send(userList)
     console.log(userList)
 })

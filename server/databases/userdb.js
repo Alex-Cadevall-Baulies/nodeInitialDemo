@@ -23,7 +23,8 @@ const Schema = mongoose.Schema
     UserSchema.method("toJSON", function() {
         const { __v, _id, ...object } = this.toObject();
         object.id = _id;
+        //we use the following method to hide password and avoid vulnerabilities
+        //delete object.password;
         return object;
       });
-
 module.exports = mongoose.model("user", UserSchema)
