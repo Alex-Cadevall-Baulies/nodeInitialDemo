@@ -60,10 +60,12 @@ router.post('/login' , async (req, res) => {
         password
     } = req.body
 
+    console.log(username)
     const usernameCheck = await User.findOne({username : username
     })
+    console.log(usernameCheck)
 
-    if(!usernameCheck) res.send(400).json({msg: 'User not registered'})
+    if(!usernameCheck) res.status(400).json({msg: 'User not registered'})
     
     if(usernameCheck) {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
