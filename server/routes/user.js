@@ -54,6 +54,9 @@ router.post('/', async (req, res) => {
     })
 
     user.save()
+    return res.status(200).json({
+        msg: `Thanks for registering ${user.nickname}`
+    })
 })
 
 router.post('/login' , async (req, res) => {
@@ -67,12 +70,12 @@ router.post('/login' , async (req, res) => {
     })
     console.log(usernameCheck)
 
-    if(!usernameCheck) res.status(400).json({msg: 'User not found'})
+    if(!usernameCheck) res.status(401).json({msg: 'User not found'})
     
     if(usernameCheck) {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
         if(validatePassword){
-            res.status(200).json({msg: `Valid password, welcome ${usernameCheck.username}`})
+            res.status(200).json({msg: `Valid password, welcome ${usernameCheck.username}, this is your session token: ${accessToken}`})
         }
         else res.status(400).json({msg: 'Wrong password'})
     }
