@@ -70,14 +70,14 @@ router.post('/login' , async (req, res) => {
     })
     console.log(usernameCheck)
 
-    if(!usernameCheck) res.status(401).json({msg: 'User not found'})
+    if(!usernameCheck) res.status(401).json({msg: 'User not found, try again or register'})
     
     if(usernameCheck) {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
         if(validatePassword){
-            res.status(200).json({msg: `Valid password, welcome ${usernameCheck.username}, this is your session token: ${accessToken}`})
+            res.status(200).json({success: true, msg: `Valid password, welcome ${usernameCheck.username}`})
         }
-        else res.status(400).json({msg: 'Wrong password'})
+        else res.status(400).json({success: false, msg: 'Wrong password, try again'})
     }
 })
 
