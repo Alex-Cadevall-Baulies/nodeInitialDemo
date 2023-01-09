@@ -40,10 +40,10 @@ router.post('/', async (req, res) => {
 
     //If checks work we hash the password and send it to create user
     const hash = await bcrypt.hashSync(password, saltRounds);
-    console.log(`this is the ${hash}`)
+    console.log(`this is the hash: ${hash}`)
     
     let id = await User.countDocuments()
-    console.log(id)
+    console.log(`this is the id: ${id}`)
 
     //If all okay we create new user
     const user = await new User({
@@ -55,6 +55,7 @@ router.post('/', async (req, res) => {
 
     user.save()
     return res.status(200).json({
+        success: true,
         msg: `Thanks for registering ${user.nickname}`
     })
 })
@@ -65,12 +66,13 @@ router.post('/login' , async (req, res) => {
         password
     } = req.body
 
-    console.log(username)
     const usernameCheck = await User.findOne({username : username
     })
-    console.log(usernameCheck)
 
-    if(!usernameCheck) res.status(401).json({msg: 'User not found, try again or register'})
+    if(!usernameCheck) res.status(401).json({
+        success: false,
+        msg: 'User not found, try again or register'
+    })
     
     if(usernameCheck) {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)

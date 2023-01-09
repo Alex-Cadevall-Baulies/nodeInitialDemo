@@ -31,7 +31,11 @@ export default {
                 if(res.data.success == true) {
                     this.$router.push({name : 'chat'})}
                 })
-            .catch(res => {alert(res.response.data.msg)})
+            .catch(res => {
+                alert(res.response.data.msg)
+                this.username = "",
+                this.password = ""
+            })
         }
     },
 }

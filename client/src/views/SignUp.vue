@@ -8,7 +8,7 @@
         <button>submit</button>
     </form>
    
-    <p>Already have an account? <RouterLink :to="{ name: 'home'}">Click here</RouterLink> </p>
+    <p>Already have an account? <RouterLink :to="{ name: 'login'}">Click here</RouterLink> </p>
     </div>
 </template>
 
@@ -36,7 +36,16 @@ export default {
                 "username": this.username,
                 "nickname": this.nickname,
                 "password": this.password
-            }).catch(res => {console.log(res)})
+            }).then(res => {
+                if(res.data.success == true) {
+                    alert(res.data.msg)
+                    this.$router.push({name : 'login'})}
+                })
+            .catch(res => {
+                alert(res.response.data.msg),
+                this.password = ''
+                this.confirmPassword = ''
+            })
 
         }
     },

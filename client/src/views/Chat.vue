@@ -2,6 +2,10 @@
     <h1>
         This is the chat page
     </h1>
+
+    <p>Username Here</p>
+    <button @click="Logout">Logout</button>
+    
     <p> Current room: {{ currentRoom }}</p>
     <button @click="leaveRoom">Leave Room</button>
 
@@ -55,6 +59,9 @@ export default {
         leaveRoom(){
             this.room = '',
             this.currentRoom = 'main'
+        },
+        logout() {
+            console.log('this has to logout user')
         }
     },
 
