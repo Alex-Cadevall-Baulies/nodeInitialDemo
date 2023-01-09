@@ -15,16 +15,16 @@ class UserDataService {
     return http.post("/user", data);
   }
 
+  login(data) {
+    return http.post(`/user/login`, data);
+  }
+
   update(id, data) {
     return http.put(`/user/${id}`, data);
   }
 
   delete(id) {
     return http.delete(`/user/${id}`);
-  }
-
-  deleteAll() {
-    return http.delete(`/user`);
   }
 
   findByTitle(title) {

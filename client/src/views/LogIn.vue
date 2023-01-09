@@ -12,17 +12,27 @@
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import dataService from '../services/dataService'
 
 export default {
     data() {
         return {
             username: "",
-            nickname: "",
             password: ""
         }
     },
 
     methods: {
+        async checkData() {
+            await dataService.login({
+                "username": this.username,
+                "password": this.password
+            }).then(res => {
+                if(res.data.success == true) {
+                    this.$router.push({name : 'chat'})}
+                })
+            .catch(res => {alert(res.response.data.msg)})
+        }
     },
 }
 </script>
