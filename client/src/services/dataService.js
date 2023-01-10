@@ -7,8 +7,8 @@ class UserDataService {
     return http.get("/user");
   }
 
-  get(id) {
-    return http.get(`/user/${id}`);
+  authenticateToken(token) {
+    return http.get(`/user/token`);
   }
 
   create(data) {

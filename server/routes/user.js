@@ -8,6 +8,8 @@ const saltRounds = 10;
 
 //activate jsonwebtoken
 const jwt = require('jsonwebtoken')
+//authenticate token
+const tokenAuthenticate = require('../controllers/tokenAuthenticate')
 
 router.post('/', async (req, res) => {
     //we receive information from frontEnd thanks to axios
@@ -45,7 +47,7 @@ router.post('/', async (req, res) => {
     let id = await User.countDocuments()
     console.log(`this is the id: ${id}`)
 
-    //If all okay we create new user
+    //If all okay we create new user and set token duration to 60 min
     const user = await new User({
         _id: id,
         username,
@@ -54,9 +56,10 @@ router.post('/', async (req, res) => {
     })
 
     user.save()
+
     return res.status(200).json({
         success: true,
-        msg: `Thanks for registering ${user.nickname}`
+        msg: `Thanks for registering ${user.nickname}`,
     })
 })
 
@@ -66,6 +69,7 @@ router.post('/login' , async (req, res) => {
         password
     } = req.body
 
+    //We check if user exist
     const usernameCheck = await User.findOne({username : username
     })
 
@@ -75,15 +79,26 @@ router.post('/login' , async (req, res) => {
     })
     
     if(usernameCheck) {
+        //If user exists we check crypted password
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
+        
         if(validatePassword){
-            res.status(200).json({success: true, msg: `Valid password, welcome ${usernameCheck.username}`})
+            const accessToken = jwt.sign(usernameCheck, process.env.ACCESS_TOKEN_SECRET)
+            
+            res.status(200).json({
+                success: true, 
+                msg: `Valid password, welcome ${usernameCheck.nickname}`,
+                accessToken: accessToken
+            })
         }
-        else res.status(400).json({success: false, msg: 'Wrong password, try again'})
+        else res.status(400).json({
+            success: false, 
+            msg: 'Wrong password, try again'
+        })
     }
 })
 
-router.get('/', async (req, res) => {
+router.get('/token', tokenAuthenticate, async (req, res) => {
     let userList = await User.find({})
     if (userList.length == 0) return res.send(`0 usuaris registrats`)
     res.send(userList)

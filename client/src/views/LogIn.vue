@@ -29,6 +29,7 @@ export default {
                 "password": this.password
             }).then(res => {
                 if(res.data.success == true) {
+                    localStorage.setItem('token', res.data.accessToken)
                     this.$router.push({name : 'chat'})}
                 })
             .catch(res => {

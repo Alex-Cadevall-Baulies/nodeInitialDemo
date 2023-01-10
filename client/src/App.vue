@@ -12,9 +12,6 @@ export default {
 name: 'App',
   components: {},
   methods: {
-    redirect() {
-      this.$router.push({name : 'chat'})
-    }
   },
   created() {
     socket.connect()

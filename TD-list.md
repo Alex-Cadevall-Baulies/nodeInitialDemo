@@ -33,4 +33,9 @@ currently:
 https://www.youtube.com/watch?v=1NrHkjlWVhM&ab_channel=WebDevSimplified
 https://www.youtube.com/watch?v=F9cvPtMI7JI&ab_channel=TheCodebookInc.
 
+TOKENS:
+https://www.youtube.com/watch?v=mbsmsi7l3r4&t=0s
+https://www.youtube.com/watch?v=SweqIbsYZ94
+https://www.youtube.com/watch?v=QUZrjnprVQU
+
 

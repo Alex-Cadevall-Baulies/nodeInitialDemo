@@ -16,7 +16,8 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../views/Chat.vue')
+      component: () => import('../views/Chat.vue'),
+      meta: {requiresAuth: true}
     },
     {
       path: '/loading',
@@ -24,6 +25,27 @@ const router = createRouter({
       component: () => import('../views/Welcome.vue')
     }
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  //We check if page we are navigating to is protected
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+  const getToken =  localStorage.getItem('token')
+    
+    if(getToken) { 
+      //we check token and redirect to chat if it's the same registered
+      await dataService.authenticateToken({
+      
+      })
+      next()
+    }
+    else{ 
+      //if no token we redirect to login
+      next('/')
+    }
+  }
+
+  next()
 })
 
 export default router

@@ -15,7 +15,10 @@ const Schema = mongoose.Schema
         password: {
             type: String,
             required: true
-        }
+        },
+        chatRooms: [
+            'main'
+        ]
     });
 
     //We use the following method to override _id from mongoose to regular id

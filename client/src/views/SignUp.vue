@@ -37,11 +37,13 @@ export default {
                 "nickname": this.nickname,
                 "password": this.password
             }).then(res => {
+                //If registration works we confirm and send to login
                 if(res.data.success == true) {
                     alert(res.data.msg)
                     this.$router.push({name : 'login'})}
                 })
             .catch(res => {
+                //If registration does not work we inform and clean fields
                 alert(res.response.data.msg),
                 this.password = ''
                 this.confirmPassword = ''
