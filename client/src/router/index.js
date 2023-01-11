@@ -34,17 +34,15 @@ router.beforeEach(async (to, from, next) => {
     
     if(getToken) { 
       //we check token and redirect to chat if it's the same registered
-      await dataService.authenticateToken({
-      
+      const res = await dataService.authenticateToken({
+        'x-access-token': getToken
       })
-      next()
+      if(!res.data.success) {return next('/')}
     }
-    else{ 
-      //if no token we redirect to login
-      next('/')
+    else {
+      return next('/')
     }
   }
-
   next()
 })
 

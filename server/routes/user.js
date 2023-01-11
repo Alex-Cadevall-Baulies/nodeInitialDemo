@@ -8,8 +8,7 @@ const saltRounds = 10;
 
 //activate jsonwebtoken
 const jwt = require('jsonwebtoken')
-//authenticate token
-const tokenAuthenticate = require('../controllers/tokenAuthenticate')
+
 
 router.post('/', async (req, res) => {
     //we receive information from frontEnd thanks to axios
@@ -83,12 +82,15 @@ router.post('/login' , async (req, res) => {
         const validatePassword = await bcrypt.compare(password, usernameCheck.password)
         
         if(validatePassword){
-            const accessToken = jwt.sign(usernameCheck, process.env.ACCESS_TOKEN_SECRET)
+            //we generate token using imported function from controllers/generate token
+            const accessToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' })
+            const refreshToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET_REFRESH)
             
             res.status(200).json({
                 success: true, 
                 msg: `Valid password, welcome ${usernameCheck.nickname}`,
-                accessToken: accessToken
+                accessToken: accessToken,
+                refreshToken: refreshToken
             })
         }
         else res.status(400).json({
@@ -96,13 +98,6 @@ router.post('/login' , async (req, res) => {
             msg: 'Wrong password, try again'
         })
     }
-})
-
-router.get('/token', tokenAuthenticate, async (req, res) => {
-    let userList = await User.find({})
-    if (userList.length == 0) return res.send(`0 usuaris registrats`)
-    res.send(userList)
-    console.log(userList)
 })
 
 module.exports = router

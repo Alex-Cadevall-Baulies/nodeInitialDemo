@@ -10,6 +10,7 @@
     <button @click="leaveRoom">Leave Room</button>
 
     <div id="chat">
+    <div>{{ content }}</div>
     <div v-for="interaction in chat" :key="interaction">
     <span>{{interaction}}</span>
     </div>
@@ -32,11 +33,13 @@
 
 <script>
 import socket from '../services/socketio'
+import dataService from '../services/dataService'
 
 export default {
     data() {
         return {
             chat: [],
+            content: '',
             newMessage: '',
             room: '', 
             currentRoom: 'main'
@@ -61,7 +64,15 @@ export default {
             this.currentRoom = 'main'
         },
         logout() {
-            console.log('this has to logout user')
+            //pending sending delete request to axios
+            localStorage.removeItem('token');
+        },
+        async getData(){
+            await dataService.getChat()
+            .then(res => {
+                this.content = res.data
+            }). catch(err => this.content = err.msg)
+        
         }
     },
 
@@ -70,6 +81,7 @@ export default {
     },
 
     mounted() {
+        this.getData()
         socket.on('showMessage', async (msg) => {
             this.chat.push(await msg)
         })

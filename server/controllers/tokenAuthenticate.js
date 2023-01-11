@@ -9,7 +9,7 @@ function tokenAuthenticate(req, res, next) {
     jwt.verify(usernameCheck, process.env.ACCESS_TOKEN_SECRET,(err, usernameCheck) => {
         //If client has token but not valid
         if(err) return res.sendStatus(403)
-        req.user = usernameCheck.username
+        req.user = usernameCheck
         next()
     })
 }

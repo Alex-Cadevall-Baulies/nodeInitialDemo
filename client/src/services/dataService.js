@@ -3,12 +3,12 @@ import http from "./axios";
 
 //we import axios setup from ./axios and use it to make the backend requests
 class UserDataService {
-  getAll() {
-    return http.get("/user");
+  getChat() {
+    return http.get("/chat");
   }
 
   authenticateToken(token) {
-    return http.get(`/user/token`);
+    return http.get(`/chat/token`, token);
   }
 
   create(data) {
