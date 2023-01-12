@@ -7,7 +7,7 @@ class UserDataService {
     return http.get("/chat");
   }
 
-  authenticateToken(token) {
+  authenticateToken() {
     return http.get(`/chat/token`, token);
   }
 

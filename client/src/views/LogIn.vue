@@ -24,19 +24,30 @@ export default {
 
     methods: {
         async checkData() {
-            await dataService.login({
-                "username": this.username,
-                "password": this.password
-            }).then(res => {
-                if(res.data.success == true) {
-                    localStorage.setItem('token', res.data.accessToken)
-                    this.$router.push({name : 'chat'})}
+            try{
+                const res = await fetch('http://localhost:8080/user/login', {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "username": this.username,
+                        "password": this.password  
+                    })
                 })
-            .catch(res => {
-                alert(res.response.data.msg)
-                this.username = "",
-                this.password = ""
-            })
+                const resDB = await res.json()
+                console.log(resDB)
+                if(resDB.success === true) {
+                    localStorage.setItem('token', resDB.accessToken)
+                    this.$router.push({name : 'chat'})
+                } else{
+                    alert(resDB.msg)
+                    this.username = "",
+                    this.password = ""
+                }
+                }catch (err){
+                    console.log(err)
+            }
         }
     },
 }

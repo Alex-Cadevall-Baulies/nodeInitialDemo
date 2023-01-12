@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router()
+const Chat = require('../databases/chatdb')
 
-//activate jsonwebtoken
-const jwt = require('jsonwebtoken')
-//authenticate token
-const tokenAuthenticate = require('../controllers/tokenAuthenticate')
+router.get('/', async (req, res) => {
+    const messages = await Chat.find({})
 
-router.get('/token', tokenAuthenticate, async (req, res) => {
-    res.json(chat.filter(chat => chat.username === req.usernameCheck.nickname))
-})
-
-router.delete('/logout', (req, res) => {
-    // we delete the used token
-    refreshToken = refreshTokens.filter(token => token !== req.body.token)
-    //send delete status success
-    res.sendStatus(204)
+    if(messages) {
+        res.status(200).json(messages)
+    } else{
+        res.status(404).json('No messages yet, be the first one to post!')
+    }
 })
 
 module.exports = router

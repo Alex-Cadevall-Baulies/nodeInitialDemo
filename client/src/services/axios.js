@@ -4,7 +4,6 @@ import axios from 'axios'
 export default axios.create({
     baseURL: "http://localhost:8080/",
     headers: {
-      "Content-type": "application/json",
-      'x-access-token': `Bearer ${accessToken}`
+      "Content-type": "application/json"
     }
   });

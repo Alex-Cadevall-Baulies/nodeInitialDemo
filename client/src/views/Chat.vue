@@ -4,7 +4,7 @@
     </h1>
 
     <p>Username Here</p>
-    <button @click="Logout">Logout</button>
+    <button @click="logout">Logout</button>
     
     <p> Current room: {{ currentRoom }}</p>
     <button @click="leaveRoom">Leave Room</button>
@@ -64,16 +64,9 @@ export default {
             this.currentRoom = 'main'
         },
         logout() {
-            //pending sending delete request to axios
+            this.$router.push({name : 'login'})
             localStorage.removeItem('token');
         },
-        async getData(){
-            await dataService.getChat()
-            .then(res => {
-                this.content = res.data
-            }). catch(err => this.content = err.msg)
-        
-        }
     },
 
     created() {
@@ -81,7 +74,6 @@ export default {
     },
 
     mounted() {
-        this.getData()
         socket.on('showMessage', async (msg) => {
             this.chat.push(await msg)
         })
