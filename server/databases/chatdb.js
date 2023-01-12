@@ -3,7 +3,6 @@ const Schema = mongoose.Schema
 
     const chatSchema = new Schema(
     {
-        _id: Number,
         user: String,
         chatroom: String,
         message: String,

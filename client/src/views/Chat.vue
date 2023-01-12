@@ -5,35 +5,41 @@
 
     <p>Username Here</p>
     <button @click="logout">Logout</button>
-    
+
     <p> Current room: {{ currentRoom }}</p>
     <button @click="leaveRoom">Leave Room</button>
 
     <div id="chat">
-    <div>{{ content }}</div>
-    <div v-for="interaction in chat" :key="interaction">
-    <span>{{interaction}}</span>
-    </div>
+        <div v-if="noMessages">
+            {{ content }}
+        </div>
+        <div v-else>
+            <div v-for="item in content" :key="item">
+                <span>{{ item.user }} : {{ item.message }}</span>
+            </div>
+        </div>
+        <div v-for="interaction in chat" :key="interaction">
+            <span>{{ interaction }}</span>
+        </div>
     </div>
 
     <div id="messageBar">
-    <form id="messageForm" action="" @submit.prevent="sendMessage">
-        <input id="input" autocomplete="off" required v-model="newMessage" />
-        <button>Send</button>
-    </form>
+        <form id="messageForm" action="" @submit.prevent="sendMessage">
+            <input id="input" autocomplete="off" required v-model="newMessage" />
+            <button>Send</button>
+        </form>
     </div>
 
     <div id="roomBar">
-    <form id="roomForm" action="" @submit.prevent="enterRoom">
-        <input id="input" autocomplete="off" v-model="room" />
-        <button>Join Room</button>
-    </form>
+        <form id="roomForm" action="" @submit.prevent="enterRoom">
+            <input id="input" autocomplete="off" v-model="room" />
+            <button>Join Room</button>
+        </form>
     </div>
 </template>
 
 <script>
-import socket from '../services/socketio'
-import dataService from '../services/dataService'
+import socket from '../services/socketio';
 
 export default {
     data() {
@@ -41,32 +47,71 @@ export default {
             chat: [],
             content: '',
             newMessage: '',
-            room: '', 
-            currentRoom: 'main'
+            room: '',
+            currentRoom: 'main',
+            noMessages: false
         }
     },
 
     methods: {
-        sendMessage() {
+        async sendMessage() {
             if (this.newMessage) {
+                try{
+                await fetch('http://localhost:8080/user/login', {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "user": "",
+                        "chatroom": this.currentRoom,
+                        "message": this.newMessage, 
+                    })
+                })
+                
                 socket.emit('sendMessage', this.newMessage, this.room)
                 this.newMessage = '';
+
+                }catch (err){
+                    console.log(err)
+            }
             }
         },
         enterRoom() {
-            if(this.room) {
+            if (this.room) {
                 socket.emit('joinRoom', this.room)
                 this.currentRoom = this.room
             }
         },
-        leaveRoom(){
+        leaveRoom() {
             this.room = '',
-            this.currentRoom = 'main'
+                this.currentRoom = 'main'
         },
         logout() {
-            this.$router.push({name : 'login'})
+            this.$router.push({ name: 'login' })
             localStorage.removeItem('token');
         },
+        async getMessages() {
+            try {
+                const res = await fetch('http://localhost:8080/chat', {
+                    method: 'GET',
+                    headers: {
+                        "Content-type": "application/json"
+                    }
+                })
+                const resDB = await res.json()
+                if(resDB.lenght > 0) {
+                    this.content = resDB
+                    this.noMessages = false
+                } else {
+                    this.content = resDB
+                    this.noMessages = true
+                }
+                
+            } catch (err) {
+                console.log(err)
+            }
+        }
     },
 
     created() {
@@ -74,8 +119,9 @@ export default {
     },
 
     mounted() {
+        this.getMessages()
         socket.on('showMessage', async (msg) => {
-            this.chat.push(await msg)
+            this.getMessages()
         })
     },
 

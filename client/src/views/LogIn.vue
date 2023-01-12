@@ -39,7 +39,7 @@ export default {
                 console.log(resDB)
                 if(resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
-                    this.$router.push({name : 'chat'})
+                    this.$router.push({name : 'chat', params: { username: this.username }})
                 } else{
                     alert(resDB.msg)
                     this.username = "",

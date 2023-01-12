@@ -32,11 +32,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
   const getToken =  localStorage.getItem('token')
     
-    if(getToken) { 
-      //we check token and redirect to chat if it's the same registered
-      next()
-    }
-    else {
+    if(!getToken) { 
       return next('/')
     }
   }
