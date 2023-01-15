@@ -3,7 +3,7 @@
         This is the chat page
     </h1>
 
-    <p>Username Here</p>
+    <p> This is the username: {{ username }}</p>
     <button @click="logout">Logout</button>
 
     <p> Current room: {{ currentRoom }}</p>
@@ -17,9 +17,6 @@
             <div v-for="item in content" :key="item">
                 <span>{{ item.user }} : {{ item.message }}</span>
             </div>
-        </div>
-        <div v-for="interaction in chat" :key="interaction">
-            <span>{{ interaction }}</span>
         </div>
     </div>
 
@@ -44,7 +41,7 @@ import socket from '../services/socketio';
 export default {
     data() {
         return {
-            chat: [],
+            username: "",
             content: '',
             newMessage: '',
             room: '',
@@ -57,19 +54,19 @@ export default {
         async sendMessage() {
             if (this.newMessage) {
                 try{
-                await fetch('http://localhost:8080/user/login', {
+                await fetch('http://localhost:8080/chat', {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "user": "",
+                        "user": this.username,
                         "chatroom": this.currentRoom,
                         "message": this.newMessage, 
                     })
                 })
                 
-                socket.emit('sendMessage', this.newMessage, this.room)
+                socket.emit('sendMessage', this.newMessage, this.username, this.room)
                 this.newMessage = '';
 
                 }catch (err){
@@ -90,6 +87,7 @@ export default {
         logout() {
             this.$router.push({ name: 'login' })
             localStorage.removeItem('token');
+            
         },
         async getMessages() {
             try {
@@ -116,11 +114,13 @@ export default {
 
     created() {
         socket.connect()
+        this.username = localStorage.getItem('user')
     },
 
     mounted() {
+        localStorage.removeItem('user')
         this.getMessages()
-        socket.on('showMessage', async (msg) => {
+        socket.on('showMessage', () => {
             this.getMessages()
         })
     },

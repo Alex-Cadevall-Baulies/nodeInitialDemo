@@ -12,7 +12,6 @@
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-import dataService from '../services/dataService'
 
 export default {
     data() {
@@ -39,7 +38,10 @@ export default {
                 console.log(resDB)
                 if(resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
-                    this.$router.push({name : 'chat', params: { username: this.username }})
+                    localStorage.setItem('user', this.username)
+                    this.$router.push({
+                        name : 'chat',
+                    })
                 } else{
                     alert(resDB.msg)
                     this.username = "",
