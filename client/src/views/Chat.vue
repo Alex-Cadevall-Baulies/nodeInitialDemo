@@ -17,6 +17,9 @@
             <div v-for="item in content" :key="item">
                 <span>{{ item.user }} : {{ item.message }}</span>
             </div>
+            <div v-for="item in chat" :key="item">
+                <span>{{ item.user }} : {{ item.msg }}</span>
+            </div>
         </div>
     </div>
 
@@ -46,7 +49,8 @@ export default {
             newMessage: '',
             room: '',
             currentRoom: 'main',
-            noMessages: false
+            noMessages: false,
+            chat: []
         }
     },
 
@@ -120,8 +124,11 @@ export default {
     mounted() {
         localStorage.removeItem('user')
         this.getMessages()
-        socket.on('showMessage', () => {
-            this.getMessages()
+        socket.on('showMessage', async (msg, user) => {
+            this.chat.push({
+                user: user,
+                msg: msg
+            })
         })
     },
 
