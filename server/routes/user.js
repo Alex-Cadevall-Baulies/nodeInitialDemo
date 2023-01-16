@@ -7,10 +7,10 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 //activate jsonwebtoken
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
     //we receive information from frontEnd thanks to axios
     let {
         username,
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
     let id = await User.countDocuments()
     console.log(`this is the id: ${id}`)
 
-    //If all okay we create new user and set token duration to 60 min
+    //If all okay we create new user
     const user = await new User({
         _id: id,
         username,
@@ -56,9 +56,11 @@ router.post('/', async (req, res) => {
 
     user.save()
 
+    const accessToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET)
     return res.status(200).json({
         success: true,
         msg: `Thanks for registering ${user.nickname}`,
+        accessToken: accessToken
     })
 })
 
@@ -67,6 +69,8 @@ router.post('/login' , async (req, res) => {
         username,
         password
     } = req.body
+    
+    console.log(req.body)
 
     //We check if user exist
     const usernameCheck = await User.findOne({username : username
@@ -83,7 +87,7 @@ router.post('/login' , async (req, res) => {
         
         if(validatePassword){
             //we generate token using imported function from controllers/generate token
-            const accessToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' })
+            const accessToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET)
             const refreshToken = await jwt.sign({usernameCheck}, process.env.ACCESS_TOKEN_SECRET_REFRESH)
             
             res.status(200).json({

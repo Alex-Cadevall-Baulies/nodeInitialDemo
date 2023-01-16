@@ -1,57 +1,61 @@
 <template>
     <div id="login">
-    <form id="login" action="" @submit.prevent="checkData">
-        <p>Username: <input id="username" autocomplete="off" required v-model="username" /></p>
-        <p>Password: <input id="password" autocomplete="off" required v-model="password" /></p>
-        <button>submit</button>
-    </form>
-   
-    <p>No Account? <RouterLink :to="{ name: 'singup'}">Click here</RouterLink> </p>
+        <form id="login" action="" @submit.prevent="checkData">
+            <p>Username: <input id="username" autocomplete="off" required v-model="username" /></p>
+            <p>Password: <input id="password" autocomplete="off" required v-model="password" /></p>
+            <button>submit</button>
+        </form>
+
+        <p>No Account? <RouterLink :to="{ name: 'singup' }">Click here</RouterLink>
+        </p>
     </div>
 </template>
 
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter} from 'vue-router'
+import { ref } from 'vue'
 
 export default {
-    data() {
-        return {
-            username: "",
-            password: ""
-        }
-    },
+    setup() {
+        const username = ref('')
+        const password = ref('')
+        const router = useRouter()
 
-    methods: {
-        async checkData() {
-            try{
+        const checkData = async () => {
+            if(!username.value || !password.value) {
+                return alert('Please fill out the fields')
+            }
+
+            try {
                 const res = await fetch('http://localhost:8080/user/login', {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "username": this.username,
-                        "password": this.password  
+                        //we use .value as we are sending refs
+                        "username": username.value,
+                        "password": password.value
                     })
                 })
                 const resDB = await res.json()
                 console.log(resDB)
-                if(resDB.success === true) {
+                if (resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
-                    localStorage.setItem('user', this.username)
-                    this.$router.push({
-                        name : 'chat',
+                    router.push({
+                        name: 'chat',
                     })
-                } else{
+                } else {
                     alert(resDB.msg)
-                    this.username = "",
-                    this.password = ""
+                    username = "",
+                    password = ""
                 }
-                }catch (err){
-                    console.log(err)
+            } catch (err) {
+                console.log(err)
             }
         }
-    },
+    return {username, password, checkData}
+    }
 }
 </script>
 

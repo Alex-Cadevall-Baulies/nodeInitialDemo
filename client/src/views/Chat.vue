@@ -124,10 +124,10 @@ export default {
     mounted() {
         localStorage.removeItem('user')
         this.getMessages()
-        socket.on('showMessage', async (msg, user) => {
+        socket.on('showMessage', async (data) => {
             this.chat.push({
-                user: user,
-                msg: msg
+                user: data.user,
+                msg: data.msg
             })
         })
     },

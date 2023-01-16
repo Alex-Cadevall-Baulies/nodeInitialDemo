@@ -10,11 +10,16 @@ const socketHandler = (io, socket) => {
     // each time we receive a message from the frontend we log it into backend console
     console.log(`user ${socket.id} message: ${msg}`);
     //we will now emit it to all front end users
+    const data = {
+      user,
+      msg
+    }
+
     if (room !== "") {
-      io.to(room).emit('showMessage', msg, user)
+      io.to(room).emit('showMessage', data)
       console.log(`user ${socket.id} joined: ${room}`)
     } else {
-      io.emit('showMessage', msg, user)
+      io.emit('showMessage', data)
     }
   });
 
