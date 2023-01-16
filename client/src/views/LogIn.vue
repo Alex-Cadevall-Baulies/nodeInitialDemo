@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { RouterLink, RouterView, useRouter} from 'vue-router'
+import { RouterLink, useRouter} from 'vue-router'
 import { ref } from 'vue'
 
 export default {
@@ -42,6 +42,7 @@ export default {
                 console.log(resDB)
                 if (resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
+                    localStorage.setItem('user', username.value)
                     router.push({
                         name: 'chat',
                     })

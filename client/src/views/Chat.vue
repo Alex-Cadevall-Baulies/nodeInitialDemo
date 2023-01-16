@@ -6,7 +6,7 @@
     <p> This is the username: {{ username }}</p>
     <button @click="logout">Logout</button>
 
-    <p> Current room: {{ currentRoom }}</p>
+    <p> Current room: {{ room }}</p>
     <button @click="leaveRoom">Leave Room</button>
 
     <div id="chat">
@@ -14,7 +14,7 @@
             {{ content }}
         </div>
         <div v-else>
-            <div v-for="item in content" :key="item">
+            <div v-if="content.length" v-for="item in content" :key="item">
                 <span>{{ item.user }} : {{ item.message }}</span>
             </div>
             <div v-for="item in chat" :key="item">
@@ -47,8 +47,7 @@ export default {
             username: "",
             content: '',
             newMessage: '',
-            room: '',
-            currentRoom: 'main',
+            room: 'main',
             noMessages: false,
             chat: []
         }
@@ -65,12 +64,13 @@ export default {
                     },
                     body: JSON.stringify({
                         "user": this.username,
-                        "chatroom": this.currentRoom,
+                        "chatroom": this.room,
                         "message": this.newMessage, 
                     })
                 })
                 
                 socket.emit('sendMessage', this.newMessage, this.username, this.room)
+                this.noMessages = false
                 this.newMessage = '';
 
                 }catch (err){
@@ -81,16 +81,16 @@ export default {
         enterRoom() {
             if (this.room) {
                 socket.emit('joinRoom', this.room)
-                this.currentRoom = this.room
             }
         },
         leaveRoom() {
             this.room = '',
-                this.currentRoom = 'main'
+                this.room = 'main'
         },
         logout() {
             this.$router.push({ name: 'login' })
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             
         },
         async getMessages() {
@@ -122,7 +122,6 @@ export default {
     },
 
     mounted() {
-        localStorage.removeItem('user')
         this.getMessages()
         socket.on('showMessage', async (data) => {
             this.chat.push({
