@@ -6,6 +6,12 @@
     <p> This is the username: {{ username }}</p>
     <button @click="logout">Logout</button>
 
+    <div>
+        <div v-for="user in connectedUsers" :key="user">
+            <ul> {{ user }}</ul>
+        </div>
+    </div>
+
     <p> Current room: {{ room }}</p>
     <button @click="leaveRoom">Leave Room</button>
 
@@ -40,6 +46,7 @@ export default {
     data() {
         return {
             username: "",
+            connectedUsers: [],
             newMessage: '',
             room: 'main',
             noMessages: false,
@@ -51,19 +58,21 @@ export default {
         async sendMessage() {
             if (this.newMessage) {
                 try {
+                    const data = {
+                            "user": this.username,
+                            "chatroom": this.room,
+                            "message": this.newMessage,
+                        }
+
                     await fetch('http://localhost:8080/chat', {
                         method: 'POST',
                         headers: {
                             "Content-type": "application/json"
                         },
-                        body: JSON.stringify({
-                            "user": this.username,
-                            "chatroom": this.room,
-                            "message": this.newMessage,
-                        })
+                        body: JSON.stringify(data)
                     })
 
-                    socket.emit('sendMessage', this.newMessage, this.username, this.room)
+                    socket.emit('sendMessage', data)
                     this.noMessages = false
                     this.newMessage = '';
 
@@ -74,14 +83,17 @@ export default {
         },
         enterRoom() {
             if (this.room) {
-                socket.emit('joinRoom', this.room)
+                const data = {
+                        "user": this.username,
+                        "chatroom": this.room,
+                        }
+                socket.emit('joinRoom', data)
                 this.chat = []
                 this.getMessages()
             }
         },
         leaveRoom() {
-            this.room = '',
-                this.room = 'main'
+            this.room = 'main'
         },
         logout() {
             this.$router.push({ name: 'login' })
@@ -118,13 +130,18 @@ export default {
 
     created() {
         this.username = localStorage.getItem('user')
-        this.getMessages()
         socket.connect()
+        this.getMessages()
     },
 
     mounted() {
         socket.on('showMessage', (data) => {
             this.chat.push(data)
+        })
+
+        socket.on('joined' , (data) => {
+            this.connectedUsers.push(data.user)
+            console.log(this.connectedUsers)
         })
     },
 

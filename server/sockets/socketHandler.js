@@ -3,27 +3,24 @@ const socketHandler = (io, socket) => {
   console.log(`a user with id ${socket.id} connected`);
 
   
-  socket.on('sendMessage', (msg, user, room) => {
+  socket.on('sendMessage', (data) => {
     // each time we receive a message from the frontend we log it into backend console
-    console.log(`user ${socket.id} message: ${msg}`);
+    console.log(`user ${socket.id} message: ${data.message}`);
+    
     //we will now emit it to all front end users
-
-    const data = {
-      "user": user,
-      "message": msg
-    }
-
-    if (room !== 'main') {
-      io.to(room).emit('showMessage', data)
-      console.log(`user ${socket.id} joined: ${room}`)
+    if (data.chatroom !== 'main') {
+      io.to(data.chatroom).emit('showMessage', data)
+      console.log(`user ${socket.id} joined: ${data.chatroom}`)
     } else {
+      console.log('I am on main')
       io.emit('showMessage', data)
     }
   });
   
-  socket.on('joinRoom', (room) => {
-    socket.join(room)
-    console.log(`you joined ${room}`)
+  socket.on('joinRoom', (data) => {
+    console.log("join: " + data.chatroom);
+    socket.join(data.chatroom);
+    io.emit('joined', data)
   })
 
   socket.on('disconnect', () => {
