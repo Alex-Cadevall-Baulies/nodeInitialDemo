@@ -4,9 +4,12 @@ const Chat = require('../databases/chatdb')
 
 router.get('/', async (req, res) => {
     const messages = await Chat.find({})
+    console.log(messages)
 
-    if (messages.lenght > 0) {
-        res.status(200).json(messages)
+    if (messages) {
+        res.status(200).json({
+            success: true,
+            msg: messages})
     } else {
         res.status(404).json('No messages yet, be the first one to post!')
     }

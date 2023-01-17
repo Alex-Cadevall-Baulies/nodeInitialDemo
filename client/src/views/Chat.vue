@@ -11,15 +11,10 @@
 
     <div id="chat">
         <div v-if="noMessages">
-            {{ content }}
+            No messages yet, be the first one to post!
         </div>
-        <div v-else>
-            <div v-if="content.length" v-for="item in content" :key="item">
-                <span>{{ item.user }} : {{ item.message }}</span>
-            </div>
-            <div v-for="item in chat" :key="item">
-                <span>{{ item.user }} : {{ item.msg }}</span>
-            </div>
+        <div v-for="item in chat" :key="item">
+            <span>{{ item.user }} : {{ item.message }}</span>
         </div>
     </div>
 
@@ -45,7 +40,6 @@ export default {
     data() {
         return {
             username: "",
-            content: '',
             newMessage: '',
             room: 'main',
             noMessages: false,
@@ -56,26 +50,26 @@ export default {
     methods: {
         async sendMessage() {
             if (this.newMessage) {
-                try{
-                await fetch('http://localhost:8080/chat', {
-                    method: 'POST',
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "user": this.username,
-                        "chatroom": this.room,
-                        "message": this.newMessage, 
+                try {
+                    await fetch('http://localhost:8080/chat', {
+                        method: 'POST',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "user": this.username,
+                            "chatroom": this.room,
+                            "message": this.newMessage,
+                        })
                     })
-                })
-                
-                socket.emit('sendMessage', this.newMessage, this.username, this.room)
-                this.noMessages = false
-                this.newMessage = '';
 
-                }catch (err){
+                    socket.emit('sendMessage', this.newMessage, this.username, this.room)
+                    this.noMessages = false
+                    this.newMessage = '';
+
+                } catch (err) {
                     console.log(err)
-            }
+                }
             }
         },
         enterRoom() {
@@ -91,7 +85,7 @@ export default {
             this.$router.push({ name: 'login' })
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            
+
         },
         async getMessages() {
             try {
@@ -102,14 +96,17 @@ export default {
                     }
                 })
                 const resDB = await res.json()
-                if(resDB.lenght > 0) {
-                    this.content = resDB
+                if (resDB.success) {
+                    resDB.msg.filter(message => {
+                        if (message.chatroom === this.room) {
+                            this.chat.push(message)
+                        }
+                    })
                     this.noMessages = false
                 } else {
-                    this.content = resDB
                     this.noMessages = true
                 }
-                
+
             } catch (err) {
                 console.log(err)
             }
@@ -117,17 +114,14 @@ export default {
     },
 
     created() {
-        socket.connect()
         this.username = localStorage.getItem('user')
+        this.getMessages()
+        socket.connect()
     },
 
     mounted() {
-        this.getMessages()
-        socket.on('showMessage', async (data) => {
-            this.chat.push({
-                user: data.user,
-                msg: data.msg
-            })
+        socket.on('showMessage', (data) => {
+            this.chat.push(data)
         })
     },
 
