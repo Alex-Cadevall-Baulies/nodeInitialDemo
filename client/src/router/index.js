@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Login from '../views/LogIn.vue'
+import Signup from '../views/SignUp.vue'
+import Chat from '../views/Chat.vue'
+import Loading from '../views/Welcome.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,24 +10,24 @@ const router = createRouter({
     {
       path: '/',
       name: 'login',
-      component: () => import('../views/LogIn.vue')
+      component: Login
     },
     {
       path: '/singup',
       name: 'singup',
-      component: () => import('../views/SignUp.vue')
+      component: Signup
     },
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../views/Chat.vue'),
+      component: Chat,
       props: true,
       meta: {requiresAuth: true}
     },
     {
       path: '/loading',
       name: 'loading',
-      component: () => import('../views/Welcome.vue')
+      component: Loading
     }
   ]
 })
