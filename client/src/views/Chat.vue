@@ -75,6 +75,8 @@ export default {
         enterRoom() {
             if (this.room) {
                 socket.emit('joinRoom', this.room)
+                this.chat = []
+                this.getMessages()
             }
         },
         leaveRoom() {
@@ -102,6 +104,7 @@ export default {
                             this.chat.push(message)
                         }
                     })
+                    console.log(this.chat)
                     this.noMessages = false
                 } else {
                     this.noMessages = true

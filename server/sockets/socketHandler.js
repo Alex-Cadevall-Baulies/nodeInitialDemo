@@ -14,7 +14,7 @@ const socketHandler = (io, socket) => {
     }
 
     if (room !== 'main') {
-      io.to(room).emit('showMessage', `${user}: ${msg}`)
+      io.to(room).emit('showMessage', data)
       console.log(`user ${socket.id} joined: ${room}`)
     } else {
       io.emit('showMessage', data)
