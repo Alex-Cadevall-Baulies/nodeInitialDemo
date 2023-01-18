@@ -102,6 +102,27 @@ router.post('/login' , async (req, res) => {
             msg: 'Wrong password, try again'
         })
     }
+}),
+
+router.put('/addroom', async (req, res) => {
+
+    let {
+        username,
+        chatroom
+    } = req.body
+
+    //we find user and add new chatroom into mogodb user chatroom array
+    const updateRoom = await User.updateOne(
+        { username: username},
+        //we use $addToSet as, if the room was already created, it will not duplicate it
+        { $addToSet: { chatRooms: chatroom} },
+      );
+
+    if(updateRoom.modifiedCount > 0){
+        res.sendStatus(200).json({success: true})
+    } else {
+        res.sendStatus(304).json({success: false})
+    }
 })
 
 module.exports = router

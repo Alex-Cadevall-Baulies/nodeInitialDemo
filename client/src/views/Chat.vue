@@ -15,7 +15,7 @@
     <p> Current room: {{ room }}</p>
     
     <div id="roomBar">
-        <form id="roomForm" action="" @submit.prevent="enterRoom">
+        <form id="roomForm" action="" @submit.prevent="addRoom">
             <input id="input" autocomplete="off" v-model="room" />
             <button>Join Room</button>
         </form>
@@ -50,7 +50,8 @@ export default {
             newMessage: '',
             room: 'main',
             noMessages: false,
-            chat: []
+            chat: [],
+            subscribedRooms: []
         }
     },
 
@@ -128,6 +129,33 @@ export default {
             } catch (err) {
                 console.log(err)
             }
+        },
+        async addRoom(){
+            if (this.room) {
+                try {
+                    const res = await fetch('http://localhost:8080/user/addroom', {
+                    method: 'PUT',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "username": this.username,
+                        "chatroom": this.room
+                    })
+                })
+                console.log(res)
+                const resDB = await res.json()
+                if (resDB.success) {
+                    this.subscribedRooms.push(this.room)
+                } else {
+                    alert(`room name already created`)
+                }
+                }
+                catch (err) {console.log(err)}
+            }
+        },
+        async getRooms (){
+
         }
     },
 
