@@ -1,26 +1,30 @@
 ## TO DO:
-- create .env []
+- create .env-teamplate [x]
+- connect server with frontend [x]
 - make instalation guide []
     - express, socket.io, vue, mongoose
-- create server.js (backend) [x]
-- connect server with frontend [x]
-- create chat (messages between f and b) [x]
-    - tidy up chat page:
-        - separate header and footer []
-        - show room and send message apart []
-- create rooms [x]
-    - Show rooms joined in the left [] (array and database)
-    - Allow user to delete them []
-- create login page [x]
-- create sing up page [x]
-- create database to store data [x]
-- link database to log-in / singup []
-- identify user by token []
-- allow logout []
-- create user account [] (add image, change name, emojis...)
+- manage users []
+    - create login page [x]
+    - create sing up page [x]
+    - identify user by token [x]
+    - allow logout [x]
+    - create user connected list []
+    - create user account [] (add image, change name, emojis...)
+- create database []
+    - link database to chat messages [x]
+    - link database to chat rooms created []
+    - link database to log-in / singup [x]
+- create chat []
+    - allow users to chat between them [x]
+    - allow users to chat on private rooms [x]
+    - allow users to send private messages []
+- create rooms []
+    - put rooms on nested pages []
+    - show rooms joined in the left [] (array and database)
+    - allow user to delete them []
 - create transition screen (screensaver, settimeout (in x minutes show opacity 100%)) []
 
-https://github.com/joseluisgs/vue-chat-socket
+
 nested routes for user part: https://router.vuejs.org/guide/essentials/nested-routes.html
 
 mongoose:
@@ -38,5 +42,9 @@ https://www.youtube.com/watch?v=mbsmsi7l3r4&t=0s
 https://www.youtube.com/watch?v=SweqIbsYZ94
 https://www.youtube.com/watch?v=QUZrjnprVQU
 https://www.bezkoder.com/vue-3-refresh-token/
+
+SOCKET:
+https://masteringbackend.com/posts/build-a-real-time-chat-app-with-vue-3-socket-io-and-nodejs/
+
 
 
