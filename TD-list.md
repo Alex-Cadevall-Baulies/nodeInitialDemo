@@ -25,7 +25,8 @@
 - create transition screen (screensaver, settimeout (in x minutes show opacity 100%)) []
 
 
-nested routes for user part: https://router.vuejs.org/guide/essentials/nested-routes.html
+VUE
+https://router.vuejs.org/guide/essentials/nested-routes.html
 
 mongoose:
 https://www.bezkoder.com/vue-node-express-mongodb-mevn-crud/#Configure_MongoDB_database_038_Mongoose
