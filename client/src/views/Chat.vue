@@ -13,7 +13,13 @@
     </div>
 
     <p> Current room: {{ room }}</p>
-    <button @click="leaveRoom">Leave Room</button>
+    
+    <div id="roomBar">
+        <form id="roomForm" action="" @submit.prevent="enterRoom">
+            <input id="input" autocomplete="off" v-model="room" />
+            <button>Join Room</button>
+        </form>
+    </div>
 
     <div id="chat">
         <div v-if="noMessages">
@@ -31,12 +37,6 @@
         </form>
     </div>
 
-    <div id="roomBar">
-        <form id="roomForm" action="" @submit.prevent="enterRoom">
-            <input id="input" autocomplete="off" v-model="room" />
-            <button>Join Room</button>
-        </form>
-    </div>
 </template>
 
 <script>
@@ -83,6 +83,7 @@ export default {
         },
         enterRoom() {
             if (this.room) {
+                this.leaveRoom()
                 const data = {
                         "user": this.username,
                         "chatroom": this.room,
@@ -93,9 +94,11 @@ export default {
             }
         },
         leaveRoom() {
-            this.room = 'main'
+            const index = this.connectedUsers.indexOf(this.username);
+            this.connectedUsers.splice(index, 1); 
         },
         logout() {
+            this.leaveRoom()
             this.$router.push({ name: 'login' })
             localStorage.removeItem('token');
             localStorage.removeItem('user');
