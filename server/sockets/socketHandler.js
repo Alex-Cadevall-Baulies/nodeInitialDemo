@@ -18,7 +18,7 @@ const socketHandler = (io, socket) => {
   });
   
   socket.on('joinRoom', (data) => {
-    console.log("join: " + data.chatroom);
+    console.log("joined: " + data.chatroom);
     socket.join(data.chatroom);
     io.emit('joined', data)
   })

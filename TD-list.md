@@ -24,6 +24,7 @@
     - allow user to delete them []
 - create transition screen (screensaver, settimeout (in x minutes show opacity 100%)) []
 
+PENDING: show nickname NOT username on chat
 
 VUE
 https://router.vuejs.org/guide/essentials/nested-routes.html

@@ -4,7 +4,7 @@ const Chat = require('../databases/chatdb')
 
 router.get('/', async (req, res) => {
     const messages = await Chat.find({})
-    console.log(messages)
+    //console.log(messages)
 
     if (messages) {
         res.status(200).json({

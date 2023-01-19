@@ -13,7 +13,13 @@
     </div>
 
     <p> Current room: {{ room }}</p>
-    
+    <div>
+        <div v-for="room in subscribedRooms" :key="room">
+            <button @click="enterRoom(room)"> {{ room }}</button>
+            <button @click="deleteRooms(room)"> X </button>
+        </div>
+    </div>
+
     <div id="roomBar">
         <form id="roomForm" action="" @submit.prevent="addRoom">
             <input id="input" autocomplete="off" v-model="room" />
@@ -60,10 +66,10 @@ export default {
             if (this.newMessage) {
                 try {
                     const data = {
-                            "user": this.username,
-                            "chatroom": this.room,
-                            "message": this.newMessage,
-                        }
+                        "user": this.username,
+                        "chatroom": this.room,
+                        "message": this.newMessage,
+                    }
 
                     await fetch('http://localhost:8080/chat', {
                         method: 'POST',
@@ -82,21 +88,27 @@ export default {
                 }
             }
         },
-        enterRoom() {
-            if (this.room) {
-                this.leaveRoom()
-                const data = {
-                        "user": this.username,
-                        "chatroom": this.room,
-                        }
-                socket.emit('joinRoom', data)
-                this.chat = []
-                this.getMessages()
+        enterRoom(newRoom) {
+            this.leaveRoom()
+            this.room = newRoom
+            const data = {
+                "user": this.username,
+                "chatroom": this.room,
             }
+            socket.emit('joinRoom', data)
+            this.chat = []
+            this.getMessages()
+            socket.on('joined', (data) => {
+            console.log(`this is data: ${data}`)
+            this.connectedUsers.push(data.user)
+        })
         },
         leaveRoom() {
+            console.log(`this is the array: ${this.connectedUsers}`)
             const index = this.connectedUsers.indexOf(this.username);
-            this.connectedUsers.splice(index, 1); 
+            console.log(`this is the index ${index}`)
+            this.connectedUsers.splice(index, 1);
+            console.log(`this is the array after: ${this.connectedUsers}`)
         },
         logout() {
             this.leaveRoom()
@@ -120,7 +132,6 @@ export default {
                             this.chat.push(message)
                         }
                     })
-                    console.log(this.chat)
                     this.noMessages = false
                 } else {
                     this.noMessages = true
@@ -130,49 +141,81 @@ export default {
                 console.log(err)
             }
         },
-        async addRoom(){
+        async addRoom() {
             if (this.room) {
                 try {
-                    const res = await fetch('http://localhost:8080/user/addroom', {
-                    method: 'PUT',
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "username": this.username,
-                        "chatroom": this.room
+                    const res = await fetch('http://localhost:8080/user/rooms', {
+                        method: 'PUT',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "username": this.username,
+                            "chatroom": this.room
+                        })
                     })
-                })
-                console.log(res)
-                const resDB = await res.json()
-                if (resDB.success) {
-                    this.subscribedRooms.push(this.room)
-                } else {
-                    alert(`room name already created`)
+                    const resDB = await res.json()
+                    if (resDB.success) {
+                        this.subscribedRooms.push(resDB.chatroom)
+                        this.enterRoom(this.room)
+                    } else {
+                        this.enterRoom()
+                        alert(resDB.msg)
+                    }
                 }
-                }
-                catch (err) {console.log(err)}
+                catch (err) { console.log(err) }
             }
         },
-        async getRooms (){
+        async getRooms() {
+            try {
+                const res = await fetch('http://localhost:8080/user/rooms', {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                            "username": this.username
+                        })
+                })
+                const resDB = await res.json()
 
+                //all people should have at least main room added into array
+                if (resDB.success) {
+                    await resDB.chatroom.map(element => this.subscribedRooms.push(element))
+                }
+                }
+                catch (err) { console.log(err) }
+        },
+        async deleteRooms() {
+            const res = await fetch('http://localhost:8080/user/rooms', {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "username": this.username,
+                            "chatroom": this.room
+                        })
+                    })
+            const resDB = await res.json()
+            
+            //there will always be a room to delete
+            if (resDB.success) {
+
+            }    
         }
     },
 
     created() {
         this.username = localStorage.getItem('user')
         socket.connect()
+        this.getRooms()
         this.getMessages()
     },
 
     mounted() {
         socket.on('showMessage', (data) => {
             this.chat.push(data)
-        })
-
-        socket.on('joined' , (data) => {
-            this.connectedUsers.push(data.user)
-            console.log(this.connectedUsers)
         })
     },
 
