@@ -89,7 +89,7 @@ export default {
             }
         },
         enterRoom(newRoom) {
-            this.leaveRoom()
+            //this.leaveRoom()
             this.room = newRoom
             const data = {
                 "user": this.username,
@@ -99,8 +99,8 @@ export default {
             this.chat = []
             this.getMessages()
             socket.on('joined', (data) => {
-            console.log(`this is data: ${data}`)
-            this.connectedUsers.push(data.user)
+            //console.log(`this is data: ${data}`)
+            //this.connectedUsers.push(data.user)
         })
         },
         leaveRoom() {
@@ -186,7 +186,7 @@ export default {
                 }
                 catch (err) { console.log(err) }
         },
-        async deleteRooms() {
+        async deleteRooms(room) {
             const res = await fetch('http://localhost:8080/user/rooms', {
                         method: 'DELETE',
                         headers: {
@@ -194,14 +194,15 @@ export default {
                         },
                         body: JSON.stringify({
                             "username": this.username,
-                            "chatroom": this.room
+                            "chatroom": room
                         })
                     })
             const resDB = await res.json()
             
             //there will always be a room to delete
             if (resDB.success) {
-
+            const index = this.subscribedRooms.indexOf(resDB.chatroom);
+            this.subscribedRooms.splice(index, 1);
             }    
         }
     },

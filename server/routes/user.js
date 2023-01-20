@@ -9,7 +9,7 @@ const saltRounds = 10;
 //activate jsonwebtoken
 const jwt = require('jsonwebtoken');
 
-
+//used to register user
 router.post('/register', async (req, res) => {
     //we receive information from frontEnd thanks to axios
     let {
@@ -66,6 +66,7 @@ router.post('/register', async (req, res) => {
     })
 })
 
+//Used for login user
 router.post('/login', async (req, res) => {
     let {
         username,
@@ -107,6 +108,26 @@ router.post('/login', async (req, res) => {
     }
 }),
 
+//Used to get rooms, reason for post is we need to send user as body and get does not accept body
+    router.post('/rooms', async (req, res) => {
+        try{
+            let user = req.body.username
+            console.log(user)
+            //user should always exist as we previously verified it
+            const getRooms = await User.findOne({
+                username: user
+            })
+
+            res.status(200).json({
+                success: true, 
+                chatroom: getRooms.chatRooms
+            })
+
+        }
+        catch(err){console.log(err)}
+    }),
+
+    //Used to add rooms
     router.put('/rooms', async (req, res) => {
 
         try {
@@ -114,18 +135,18 @@ router.post('/login', async (req, res) => {
                 username,
                 chatroom
             } = req.body
-
+    
             console.log(req.body)
-
+    
             //we find user and add new chatroom into mogodb user chatroom array
             const updateRoom = await User.updateOne(
                 { username: username },
                 //we use $addToSet as, if the room was already created, it will not duplicate it
                 { $addToSet: { chatRooms: chatroom } },
             );
-
+    
             console.log(updateRoom)
-
+    
             if (updateRoom.modifiedCount > 0) {
                 res.status(200).json({ 
                     success: true, 
@@ -142,20 +163,35 @@ router.post('/login', async (req, res) => {
         catch (err) { console.log(err) }
     })
 
-    router.post('/rooms', async (req, res) => {
+    //Used to delete rooms
+    router.delete('/rooms', async (req, res) => {
         try{
-            let user = req.body.username
-            console.log(user)
-            //user should always exist as we previously verified it
-            const getRooms = await User.findOne({
-                username: user
-            })
+                let {
+                    username,
+                    chatroom
+                } = req.body
+             
+            //we find user and add new chatroom into mogodb user chatroom array
+             const updateRoom = await User.updateOne(
+                { username: username },
+                //we use $addToSet as, if the room was already created, it will not duplicate it
+                { $pull: { chatRooms: chatroom } },
+            );
 
-            res.status(200).json({
-                success: true, 
-                chatroom: getRooms.chatRooms
-            })
+            console.log(updateRoom)
 
+            if (updateRoom.modifiedCount > 0) {
+                res.status(200).json({ 
+                    success: true, 
+                    chatroom: chatroom,
+                    msg: `${chatroom} deleted`
+                })
+            } else {
+                res.status(400).json({ 
+                    success: false, 
+                    msg: `room not found` 
+                })
+            }
         }
         catch(err){console.log(err)}
     })
