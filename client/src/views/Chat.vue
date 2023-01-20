@@ -88,27 +88,43 @@ export default {
                 }
             }
         },
-        enterRoom(newRoom) {
-            //this.leaveRoom()
-            this.room = newRoom
+        leaveRoom() {
+            const index = this.connectedUsers.indexOf(this.user);
+
+            //We check if this is user's first log-in
+            //If it is we return and continue with enterRoom function
+            if(index == -1) return
+
+            else{
             const data = {
-                "user": this.username,
+                "username": this.username,
+                "chatroom": this.room,
+            }
+            socket.emit('leaveRoom', data)
+            socket.on('left', (data) => {
+                console.log(`${data.username} leaving room`)
+                const user = data.username
+                console.log(`this is the ${user}`)
+                console.log(index)
+                this.connectedUsers.splice(index, 1);
+                console.log(this.connectedUsers)
+            })
+        }},
+        enterRoom(newRoom) {
+            console.log(`this is the ${newRoom}`)
+            //We logout user from previous room
+            this.leaveRoom()
+            const data = {
+                "username": this.username,
                 "chatroom": this.room,
             }
             socket.emit('joinRoom', data)
             this.chat = []
             this.getMessages()
             socket.on('joined', (data) => {
-            //console.log(`this is data: ${data}`)
-            //this.connectedUsers.push(data.user)
-        })
-        },
-        leaveRoom() {
-            console.log(`this is the array: ${this.connectedUsers}`)
-            const index = this.connectedUsers.indexOf(this.username);
-            console.log(`this is the index ${index}`)
-            this.connectedUsers.splice(index, 1);
-            console.log(`this is the array after: ${this.connectedUsers}`)
+            console.log(`${data.username} entring room`)
+            this.connectedUsers.push(data.username)
+            })
         },
         logout() {
             this.leaveRoom()
@@ -156,8 +172,7 @@ export default {
                     })
                     const resDB = await res.json()
                     if (resDB.success) {
-                        this.subscribedRooms.push(resDB.chatroom)
-                        this.enterRoom(this.room)
+                        alert('new room created!')
                     } else {
                         this.enterRoom()
                         alert(resDB.msg)
@@ -187,6 +202,7 @@ export default {
                 catch (err) { console.log(err) }
         },
         async deleteRooms(room) {
+            if(room == 'main') return alert(`main room cannot be deleted!`)
             const res = await fetch('http://localhost:8080/user/rooms', {
                         method: 'DELETE',
                         headers: {

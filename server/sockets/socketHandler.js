@@ -16,12 +16,19 @@ const socketHandler = (io, socket) => {
       io.emit('showMessage', data)
     }
   });
+
+  socket.on('leaveRoom', (data) => {
+    console.log("left: " + data.chatroom);
+    socket.join(data.chatroom);
+    io.emit('left', data)
+  })
   
   socket.on('joinRoom', (data) => {
     console.log("joined: " + data.chatroom);
     socket.join(data.chatroom);
     io.emit('joined', data)
   })
+
 
   socket.on('disconnect', () => {
     console.log(`user with id ${socket.id} disconnected`);
