@@ -42,7 +42,7 @@ export default {
                 console.log(resDB)
                 if (resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
-                    localStorage.setItem('user', username.value)
+                    localStorage.setItem('user', resDB.nickname)
                     router.push({
                         name: 'chat',
                     })

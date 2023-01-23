@@ -6,6 +6,7 @@ const Schema = mongoose.Schema
         user: String,
         chatroom: String,
         message: String,
+        connections: []
     });
 
     //We use the following method to override _id from mongoose to regular id

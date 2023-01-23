@@ -96,6 +96,7 @@ router.post('/login', async (req, res) => {
 
             res.status(200).json({
                 success: true,
+                nickname: usernameCheck.nickname,
                 msg: `Valid password, welcome ${usernameCheck.nickname}`,
                 accessToken: accessToken,
                 refreshToken: refreshToken
@@ -115,7 +116,7 @@ router.post('/login', async (req, res) => {
             console.log(user)
             //user should always exist as we previously verified it
             const getRooms = await User.findOne({
-                username: user
+                nickname: user
             })
 
             res.status(200).json({
@@ -140,7 +141,7 @@ router.post('/login', async (req, res) => {
     
             //we find user and add new chatroom into mogodb user chatroom array
             const updateRoom = await User.updateOne(
-                { username: username },
+                { nickname: username },
                 //we use $addToSet as, if the room was already created, it will not duplicate it
                 { $addToSet: { chatRooms: chatroom } },
             );
@@ -173,7 +174,7 @@ router.post('/login', async (req, res) => {
              
             //we find user and add new chatroom into mogodb user chatroom array
              const updateRoom = await User.updateOne(
-                { username: username },
+                { nickname: username },
                 //we use $addToSet as, if the room was already created, it will not duplicate it
                 { $pull: { chatRooms: chatroom } },
             );

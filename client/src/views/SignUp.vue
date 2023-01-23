@@ -54,7 +54,7 @@ export default {
                 //If registration works we confirm and send to login
                 if (resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
-                    localStorage.setItem('user', username.value)
+                    localStorage.setItem('user', nickname.value)
                     router.push({
                         name: 'chat'
                     })

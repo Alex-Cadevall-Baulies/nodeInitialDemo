@@ -61,6 +61,28 @@ export default {
         const subscribedRooms = ref([])
         const router = useRouter()
 
+        socket.on('login', (data) => {
+            connectedUsers.value.push(data.username)
+            chat.value.push(data)
+        }),
+
+            socket.on('showMessage', (data) => {
+                chat.value.push(data)
+            }),
+
+            socket.on('left', (data) => {
+                chat.value.push(data)
+                const index = connectedUsers.value.indexOf(data.username);
+                console.log(index)
+                connectedUsers.value.splice(index, 1);
+            }),
+
+            socket.on('joined', (joinedData) => {
+                console.log(joinedData)
+                connectedUsers.value.push(joinedData.username)
+                chat.value.push(joinedData)
+            })
+
         const sendMessage = async () => {
             if (newMessage.value) {
                 try {
@@ -94,13 +116,6 @@ export default {
                 "chatroom": room.value,
             }
             socket.emit('leaveRoom', data)
-
-            socket.on('left', (data) => {
-                console.log(data)
-                chat.value.push(data)
-                const index = connectedUsers.value.indexOf(data.username);
-                connectedUsers.value.splice(index, 1);
-            })
         }
 
         const enterRoom = (newRoom) => {
@@ -116,12 +131,24 @@ export default {
             socket.emit('joinRoom', data)
             chat.value = []
             getMessages()
+        }
 
-            socket.on('joined', (joinedData) => {
-                console.log(joinedData)
-                connectedUsers.value.push(joinedData.username)
-                chat.value.push(joinedData)
-            })
+        const connectUsers = async () => {
+            const res = await fetch('http://localhost:8080/chat/connect', {
+                        method: 'PUT',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "user": username.value,
+                            "chatroom": room.value
+                        })
+                    })
+                    const resDB = await res.json()
+        }
+
+        const disconnectUsers = async () => {
+
         }
 
         const logout = () => {
@@ -228,17 +255,12 @@ export default {
         }
 
         onBeforeMount(() => {
+            console.log('username setup!')
             username.value = localStorage.getItem('user')
             socket.connect()
             getRooms()
             getMessages()
             socket.emit('new-user', username.value)
-        })
-
-        onMounted(() => {
-            socket.on('showMessage', (data) => {
-                chat.value.push(data)
-            })
         })
 
         onUnmounted(() => {
