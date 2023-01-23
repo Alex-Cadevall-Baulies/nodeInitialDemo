@@ -16,7 +16,7 @@
     <div>
         <div v-for="room in subscribedRooms" :key="room">
             <button @click="enterRoom(room)"> {{ room }}</button>
-            <button @click="deleteRooms(room)"> X </button>
+            <button @click="deleteRoom(room)"> X </button>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
             No messages yet, be the first one to post!
         </div>
         <div v-for="item in chat" :key="item">
-            <span>{{ item.user }} : {{ item.message }}</span>
+            <span>{{ item.username }} : {{ item.message }}</span>
         </div>
     </div>
 
@@ -46,29 +46,28 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+import { ref, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import socket from '../services/socketio';
 
 export default {
-    data() {
-        return {
-            username: "",
-            connectedUsers: [],
-            newMessage: '',
-            room: 'main',
-            noMessages: false,
-            chat: [],
-            subscribedRooms: []
-        }
-    },
+    setup() {
+        const username = ref("")
+        const connectedUsers = ref([])
+        const newMessage = ref('')
+        const room = ref('main')
+        const noMessages = ref(false)
+        const chat = ref([])
+        const subscribedRooms = ref([])
+        const router = useRouter()
 
-    methods: {
-        async sendMessage() {
-            if (this.newMessage) {
+        const sendMessage = async () => {
+            if (newMessage.value) {
                 try {
                     const data = {
-                        "user": this.username,
-                        "chatroom": this.room,
-                        "message": this.newMessage,
+                        "user": username.value,
+                        "chatroom": room.value,
+                        "message": newMessage.value,
                     }
 
                     await fetch('http://localhost:8080/chat', {
@@ -80,60 +79,60 @@ export default {
                     })
 
                     socket.emit('sendMessage', data)
-                    this.noMessages = false
-                    this.newMessage = '';
+                    noMessages.value = false
+                    newMessage.value = '';
 
                 } catch (err) {
                     console.log(err)
                 }
             }
-        },
-        leaveRoom() {
-            const index = this.connectedUsers.indexOf(this.user);
+        }
 
-            //We check if this is user's first log-in
-            //If it is we return and continue with enterRoom function
-            if(index == -1) return
-
-            else{
+        const leaveRoom = () => {
             const data = {
-                "username": this.username,
-                "chatroom": this.room,
+                "username": username.value,
+                "chatroom": room.value,
             }
             socket.emit('leaveRoom', data)
+
             socket.on('left', (data) => {
-                console.log(`${data.username} leaving room`)
-                const user = data.username
-                console.log(`this is the ${user}`)
-                console.log(index)
-                this.connectedUsers.splice(index, 1);
-                console.log(this.connectedUsers)
+                console.log(data)
+                chat.value.push(data)
+                const index = connectedUsers.value.indexOf(data.username);
+                connectedUsers.value.splice(index, 1);
             })
-        }},
-        enterRoom(newRoom) {
+        }
+
+        const enterRoom = (newRoom) => {
             console.log(`this is the ${newRoom}`)
             //We logout user from previous room
-            this.leaveRoom()
+            leaveRoom()
+            room.value = newRoom
+
             const data = {
-                "username": this.username,
-                "chatroom": this.room,
+                "username": username.value,
+                "chatroom": room.value,
             }
             socket.emit('joinRoom', data)
-            this.chat = []
-            this.getMessages()
-            socket.on('joined', (data) => {
-            console.log(`${data.username} entring room`)
-            this.connectedUsers.push(data.username)
+            chat.value = []
+            getMessages()
+
+            socket.on('joined', (joinedData) => {
+                console.log(joinedData)
+                connectedUsers.value.push(joinedData.username)
+                chat.value.push(joinedData)
             })
-        },
-        logout() {
-            this.leaveRoom()
-            this.$router.push({ name: 'login' })
+        }
+
+        const logout = () => {
+            leaveRoom()
+            router.push({ name: 'login' })
             localStorage.removeItem('token');
             localStorage.removeItem('user');
 
-        },
-        async getMessages() {
+        }
+
+        const getMessages = async () => {
             try {
                 const res = await fetch('http://localhost:8080/chat', {
                     method: 'GET',
@@ -141,24 +140,26 @@ export default {
                         "Content-type": "application/json"
                     }
                 })
+
                 const resDB = await res.json()
                 if (resDB.success) {
                     resDB.msg.filter(message => {
-                        if (message.chatroom === this.room) {
-                            this.chat.push(message)
+                        if (message.chatroom === room.value) {
+                            chat.value.push(message)
                         }
                     })
-                    this.noMessages = false
+                    noMessages.value = false
                 } else {
-                    this.noMessages = true
+                    noMessages.value = true
                 }
 
             } catch (err) {
                 console.log(err)
             }
-        },
-        async addRoom() {
-            if (this.room) {
+        }
+
+        const addRoom = async () => {
+            if (room.value) {
                 try {
                     const res = await fetch('http://localhost:8080/user/rooms', {
                         method: 'PUT',
@@ -166,22 +167,25 @@ export default {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            "username": this.username,
-                            "chatroom": this.room
+                            "username": username.value,
+                            "chatroom": room.value
                         })
                     })
                     const resDB = await res.json()
                     if (resDB.success) {
-                        alert('new room created!')
+                        subscribedRooms.value.push(resDB.chatroom)
+                        alert(resDB.msg)
+                        enterRoom(room.value)
                     } else {
-                        this.enterRoom()
+                        enterRoom(room.value)
                         alert(resDB.msg)
                     }
                 }
                 catch (err) { console.log(err) }
             }
-        },
-        async getRooms() {
+        }
+
+        const getRooms = async () => {
             try {
                 const res = await fetch('http://localhost:8080/user/rooms', {
                     method: 'POST',
@@ -189,56 +193,60 @@ export default {
                         "Content-type": "application/json",
                     },
                     body: JSON.stringify({
-                            "username": this.username
-                        })
+                        "username": username.value
+                    })
                 })
                 const resDB = await res.json()
 
                 //all people should have at least main room added into array
                 if (resDB.success) {
-                    await resDB.chatroom.map(element => this.subscribedRooms.push(element))
+                    await resDB.chatroom.map(element => subscribedRooms.value.push(element))
                 }
-                }
-                catch (err) { console.log(err) }
-        },
-        async deleteRooms(room) {
-            if(room == 'main') return alert(`main room cannot be deleted!`)
+            }
+            catch (err) { console.log(err) }
+        }
+
+        const deleteRoom = async (room) => {
+            if (room == 'main') return alert(`main room cannot be deleted!`)
             const res = await fetch('http://localhost:8080/user/rooms', {
-                        method: 'DELETE',
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "username": this.username,
-                            "chatroom": room
-                        })
-                    })
+                method: 'DELETE',
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    "username": username.value,
+                    "chatroom": room
+                })
+            })
             const resDB = await res.json()
-            
+
             //there will always be a room to delete
             if (resDB.success) {
-            const index = this.subscribedRooms.indexOf(resDB.chatroom);
-            this.subscribedRooms.splice(index, 1);
-            }    
+                const index = subscribedRooms.value.indexOf(resDB.chatroom);
+                subscribedRooms.value.splice(index, 1);
+            }
         }
-    },
 
-    created() {
-        this.username = localStorage.getItem('user')
-        socket.connect()
-        this.getRooms()
-        this.getMessages()
-    },
-
-    mounted() {
-        socket.on('showMessage', (data) => {
-            this.chat.push(data)
+        onBeforeMount(() => {
+            username.value = localStorage.getItem('user')
+            socket.connect()
+            getRooms()
+            getMessages()
+            socket.emit('new-user', username.value)
         })
-    },
 
-    beforeUnmount() {
-        if (socket)
-            socket.disconnect()
+        onMounted(() => {
+            socket.on('showMessage', (data) => {
+                chat.value.push(data)
+            })
+        })
+
+        onUnmounted(() => {
+            if (socket)
+                socket.disconnect()
+        })
+
+        return { username, connectedUsers, room, subscribedRooms, room, noMessages, chat, newMessage, logout, enterRoom, deleteRoom, addRoom, sendMessage }
     }
 }
 </script>
