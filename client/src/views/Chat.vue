@@ -64,6 +64,7 @@ export default {
         socket.on('login', (data) => {
             connectedUsers.value.push(data.username)
             chat.value.push(data)
+            connectUsers()
         }),
 
             socket.on('showMessage', (data) => {
@@ -118,11 +119,13 @@ export default {
             socket.emit('leaveRoom', data)
         }
 
-        const enterRoom = (newRoom) => {
+        const enterRoom = async (newRoom) => {
             console.log(`this is the ${newRoom}`)
             //We logout user from previous room
             leaveRoom()
             room.value = newRoom
+
+            connectUsers()
 
             const data = {
                 "username": username.value,
@@ -144,8 +147,16 @@ export default {
                             "chatroom": room.value
                         })
                     })
+
                     const resDB = await res.json()
-        }
+                    console.log(resDB)
+                    /*
+                    if (resDB.success) {
+                    resDB.msg.filter(message => {
+                        if (message.chatroom === room.value) {
+                            chat.value.push(message)
+                        }*/
+                    }
 
         const disconnectUsers = async () => {
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router()
 const Chat = require('../databases/chatdb')
+const Connections = require('../databases/connectionsdb')
 
 router.get('/', async (req, res) => {
     const messages = await Chat.find({})
@@ -42,31 +43,41 @@ router.put('/connect', async (req, res) => {
             chatroom
         } = req.body
 
+        console.log('I am on /connect')
         console.log(req.body)
 
-    //We check if connection existis
-        const checkConnection = await Chat.find({ 
-            connections: { 
-               $elemMatch: { user: user } 
-            }
-         }); 
+    //We check if connection exists
+    const checkConnection = await Connections.findOne({
+            user: user
+        })
     
-    //if first connection we push it to db, if not we update connections array
-    if(!checkConnection) {
-        Chat.connections.push(req.body);
-        Chat.save()
-        console.log('connection added')
-    } else {
-         await Chat.updateOne({user: user}, {$set: {
-            user: user,
-            chatroom: chatroom
-        }})
+    console.log(`connection is ${checkConnection}`)
+    
+    //if first connection we create it on, if not we update connections
+    if(checkConnection) {
+        const connection = await Connections.updateOne({
+            user: user}, {
+                user: user,
+                chatroom: chatroom
+            })
+        
+        console.log(connection)
         console.log('connection updated')
+    } else {
+        ('I AM INSIDE CHECKCONNECTION')
+        const connection = await new Connections({
+            _id: id,
+            user,
+            chatroom
+        })
+
+        connection.save()
+        console.log(connection)
+        console.log('connection added')
     }
-    
+
     res.status(200).json({ 
                 success: true,
-
                 chatroom: chatroom,
                 msg: `${chatroom} added`
             })
