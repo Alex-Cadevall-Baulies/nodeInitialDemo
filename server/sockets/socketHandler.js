@@ -11,31 +11,19 @@ const socketHandler = (io, socket) => {
     // each time we receive a message from the frontend we log it into backend console
     console.log(`user ${socket.id} message: ${data.message}`);
 
-    //we update data received because we need user to become username
-    const newData = {
-      username: data.user,
-      chatroom: data.chatroom,
-      message: data.message
-    }
-
     //we will now emit it to all front end users
-    if (newData.chatroom !== 'main') {
-      io.to(data.chatroom).emit('showMessage', newData)
-      console.log(`user ${socket.id} joined: ${newData.chatroom}`)
-    } else {
-      io.emit('showMessage', newData)
-    }
+      io.to(data.chatroom).emit('showMessage', data)
   });
 
   socket.on('leaveRoom', (data) => {
     try{
       const leaveData = {
-      username: data.username,
-      chatroom: data.chatroom,
-      message: `left ${data.chatroom}`
-    }
+        username: data.username,
+        chatroom: data.chatroom,
+        message: `has left ${data.chatroom}`
+      }
 
-    io.emit('left', leaveData)
+    io.to(data.chatroom).emit('left', leaveData)
     socket.leave(leaveData.chatroom)
     console.log("left: " + leaveData.chatroom);
     } catch (error) {console.log(error)}
@@ -46,12 +34,11 @@ const socketHandler = (io, socket) => {
     const joinData = {
       username: data.username,
       chatroom: data.chatroom,
-      message: `joined ${data.chatroom}`
+      message: `has joined ${data.chatroom}`
     }
-
     socket.join(joinData.chatroom)
     console.log("joined: " + joinData.chatroom);
-    io.emit('joined', joinData)
+    io.to(data.chatroom).emit('joined', joinData)
     } catch(error) { console.log(error)}
   })
 

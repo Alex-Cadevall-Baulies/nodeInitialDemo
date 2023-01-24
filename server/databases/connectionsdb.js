@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const connectionSchema = new Schema(
     {
-        user: String,
+        username: String,
         chatroom: String
     });
 

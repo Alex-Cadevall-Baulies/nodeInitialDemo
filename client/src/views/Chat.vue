@@ -47,7 +47,7 @@
 
 <script>
 import { useRouter } from 'vue-router'
-import { ref, onBeforeMount, onMounted, onUnmounted } from 'vue'
+import { ref, onBeforeMount, onUnmounted } from 'vue'
 import socket from '../services/socketio';
 
 export default {
@@ -88,7 +88,7 @@ export default {
             if (newMessage.value) {
                 try {
                     const data = {
-                        "user": username.value,
+                        "username": username.value,
                         "chatroom": room.value,
                         "message": newMessage.value,
                     }
@@ -137,33 +137,36 @@ export default {
         }
 
         const connectUsers = async () => {
-            const res = await fetch('http://localhost:8080/chat/connect', {
+            await fetch('http://localhost:8080/chat/connect', {
                         method: 'PUT',
                         headers: {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            "user": username.value,
+                            "username": username.value,
                             "chatroom": room.value
                         })
                     })
-
-                    const resDB = await res.json()
-                    console.log(resDB)
-                    /*
-                    if (resDB.success) {
-                    resDB.msg.filter(message => {
-                        if (message.chatroom === room.value) {
-                            chat.value.push(message)
-                        }*/
                     }
 
         const disconnectUsers = async () => {
-
+            await fetch('http://localhost:8080/chat/connect', {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "username": username.value,
+                            "chatroom": room.value
+                        })
+                    })
         }
 
         const logout = () => {
             leaveRoom()
+            deleteRoom()
+            if (socket)
+                socket.disconnect()
             router.push({ name: 'login' })
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -181,9 +184,9 @@ export default {
 
                 const resDB = await res.json()
                 if (resDB.success) {
-                    resDB.msg.filter(message => {
-                        if (message.chatroom === room.value) {
-                            chat.value.push(message)
+                    resDB.data.filter(data => {
+                        if (data.chatroom === room.value) {
+                            chat.value.push(data)
                         }
                     })
                     noMessages.value = false
@@ -265,16 +268,17 @@ export default {
             }
         }
 
-        onBeforeMount(() => {
+        onBeforeMount(async () => {
             console.log('username setup!')
             username.value = localStorage.getItem('user')
             socket.connect()
-            getRooms()
-            getMessages()
+            await getRooms()
+            await getMessages()
             socket.emit('new-user', username.value)
         })
 
         onUnmounted(() => {
+            disconnectUsers()
             if (socket)
                 socket.disconnect()
         })

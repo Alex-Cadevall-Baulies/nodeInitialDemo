@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
     const chatSchema = new Schema(
     {
-        user: String,
+        username: String,
         chatroom: String,
         message: String
     });

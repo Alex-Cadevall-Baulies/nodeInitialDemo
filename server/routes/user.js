@@ -53,6 +53,7 @@ router.post('/register', async (req, res) => {
         _id: id,
         username,
         nickname,
+        chatRooms: 'main',
         password: hash
     })
 
@@ -118,7 +119,8 @@ router.post('/login', async (req, res) => {
             const getRooms = await User.findOne({
                 nickname: user
             })
-
+            console.log('this is the get rooms')
+            console.log(getRooms)
             res.status(200).json({
                 success: true, 
                 chatroom: getRooms.chatRooms
