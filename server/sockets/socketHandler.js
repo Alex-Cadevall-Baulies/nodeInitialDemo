@@ -2,8 +2,15 @@
 const socketHandler = (io, socket) => {
 
   socket.on('new-user', (data) => {
-    console.log(`the user ${data} with id ${socket.id} connected`);
-    io.emit('login', {username: data, message: 'has joined'})
+    console.log(`the user ${data.username} with id ${socket.id} connected`);
+    socket.join(data.chatroom)
+
+    const loginData = {
+      username: data.username, 
+      message: 'has joined'
+    }
+    
+    io.to(data.chatroom).emit('login', loginData)
   })
 
 

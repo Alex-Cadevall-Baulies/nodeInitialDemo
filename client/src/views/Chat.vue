@@ -7,8 +7,8 @@
     <button @click="logout">Logout</button>
 
     <div>
-        <div v-for="user in connectedUsers" :key="user">
-            <ul> {{ user }}</ul>
+        <div v-for="username in connectedUsers" :key="username">
+            <ul> {{ username }}</ul>
         </div>
     </div>
 
@@ -47,8 +47,8 @@
 
 <script>
 import { useRouter } from 'vue-router'
-import { ref, onBeforeMount, onUnmounted } from 'vue'
-import socket from '../services/socketio';
+import { ref, onMounted, onUnmounted } from 'vue'
+import io from 'socket.io-client'
 
 export default {
     setup() {
@@ -61,6 +61,18 @@ export default {
         const subscribedRooms = ref([])
         const router = useRouter()
 
+        //Vue3 composition API makes us call socket inside setup
+        const socket = io(`http://localhost:8080`,
+            { query: { token: localStorage.getItem('token') } })
+
+        onMounted(() => {
+            startChat()
+        })
+
+        onUnmounted(() => {
+            leaveChat()
+        })
+
         socket.on('login', (data) => {
             connectedUsers.value.push(data.username)
             chat.value.push(data)
@@ -68,6 +80,8 @@ export default {
         }),
 
             socket.on('showMessage', (data) => {
+                console.log('showMessage activated')
+                console.log(data)
                 chat.value.push(data)
             }),
 
@@ -79,9 +93,9 @@ export default {
             }),
 
             socket.on('joined', (joinedData) => {
-                console.log(joinedData)
                 connectedUsers.value.push(joinedData.username)
                 chat.value.push(joinedData)
+                connectUsers()
             })
 
         const sendMessage = async () => {
@@ -125,41 +139,59 @@ export default {
             leaveRoom()
             room.value = newRoom
 
-            connectUsers()
-
             const data = {
                 "username": username.value,
                 "chatroom": room.value,
             }
             socket.emit('joinRoom', data)
             chat.value = []
+            connectedUsers.value = []
             getMessages()
+            getConnectedUsers()
         }
 
         const connectUsers = async () => {
             await fetch('http://localhost:8080/chat/connect', {
-                        method: 'PUT',
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "username": username.value,
-                            "chatroom": room.value
-                        })
-                    })
-                    }
+                method: 'PUT',
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    "username": username.value,
+                    "chatroom": room.value
+                })
+            })
+        }
 
         const disconnectUsers = async () => {
             await fetch('http://localhost:8080/chat/connect', {
-                        method: 'DELETE',
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "username": username.value,
-                            "chatroom": room.value
-                        })
-                    })
+                method: 'DELETE',
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    "username": username.value,
+                    "chatroom": room.value
+                })
+            })
+        }
+
+        const getConnectedUsers = async () => {
+            const usersOnline = await fetch('http://localhost:8080/chat/connect', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/json"
+                },
+            })
+
+            const resDB = await usersOnline.json()
+            if (resDB.success) {
+                resDB.getConnections.filter(data => {
+                    if (data.chatroom === room.value) {
+                        connectedUsers.value.push(data.username)
+                    }
+                })
+            }
         }
 
         const logout = () => {
@@ -268,20 +300,25 @@ export default {
             }
         }
 
-        onBeforeMount(async () => {
-            console.log('username setup!')
+        const startChat = async () => {
             username.value = localStorage.getItem('user')
-            socket.connect()
-            await getRooms()
-            await getMessages()
-            socket.emit('new-user', username.value)
-        })
+            getRooms()
+            getMessages()
+            getConnectedUsers()
 
-        onUnmounted(() => {
+            const data = {
+                username: username.value,
+                chatroom: room.value
+            }
+
+            socket.emit('new-user', data)
+        }
+
+        const leaveChat = async () => {
             disconnectUsers()
             if (socket)
                 socket.disconnect()
-        })
+        }
 
         return { username, connectedUsers, room, subscribedRooms, room, noMessages, chat, newMessage, logout, enterRoom, deleteRoom, addRoom, sendMessage }
     }

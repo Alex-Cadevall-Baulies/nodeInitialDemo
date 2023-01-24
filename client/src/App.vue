@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import { RouterLink, RouterView } from 'vue-router'
-import socket from './services/socketio.js';
+import {RouterView} from 'vue-router'
 
 export default {
 name: 'App'
