@@ -102,7 +102,6 @@ export default {
             socket.on('left', (data) => {
                 chat.value.push(data)
                 const index = connectedUsers.value.indexOf(data.username);
-                console.log(index)
                 connectedUsers.value.splice(index, 1);
             }),
 
@@ -210,7 +209,7 @@ export default {
 
         const logout = () => {
             leaveRoom()
-            deleteRoom()
+            disconnectUsers()
             if (socket)
                 socket.disconnect()
             router.push({ name: 'login' })
