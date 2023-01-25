@@ -1,26 +1,13 @@
 <template>
-
-    <div id = "users">
-    <p> Current User: </p>
-    <p>{{ username }}</p>
-    <button id = "logout" @click="logout">Logout</button>
-
-    <div id="connected">
-        <p>Connected Users:</p>
-        <div v-for="username in connectedUsers" :key="username">
-            <ul> {{ username }}</ul>
-        </div>
-    </div>
-    </div>
-
-    <div id = "rooms">
+    <div class = "container">
+<div id = "rooms">
         <p> Current room: </p>
         <p> {{ room }}</p>
         
         <div id="roomBar">
             <form id="roomForm" action="" @submit.prevent="addRoom">
                 <input id="input" autocomplete="off" v-model="room" />
-                <button>Join Room</button>
+                <button>Add Room</button>
             </form>
         </div>
 
@@ -32,7 +19,6 @@
 
     </div>
     </div>
-
 
     <div id="chat">
         <div v-if="noMessages">
@@ -50,7 +36,20 @@
         </div>
     </div>
 
+    
+    <div id = "users">
+    <p> Current User: </p>
+    <p>{{ username }}</p>
+    <button id = "logout" @click="logout">Logout</button>
 
+    <div id="connected">
+        <p>Connected Users:</p>
+        <div v-for="username in connectedUsers" :key="username">
+            <ul> {{ username }}</ul>
+        </div>
+    </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -334,16 +333,45 @@ export default {
 </script>
 
 <style>
+.container {
+    height: 100vh;
+    margin: 0
+
+}
 #users{
-    float: right;
-    align-content: center;
+    float: left;
+    height: 100vh;
+    width: 20%;
+    display: flex;
+    flex-flow: column;
+    border: solid #5B6DCD 5px;
+    padding: 5px;
 }
 #chat {
-    float: center;
-    align-content: center;
+    float: left;
+    height: 100vh;
+    width: 45%;
+    display: flex;
+    flex-flow: column;
+    border: solid #5B6DCD 5px;
+    padding: 5px;
 }
 #rooms{
     float: left;
-    align-content: center;
+    height: 100vh;
+    width: 20%;
+    display: flex;
+    flex-flow: column;
+    border: solid #5B6DCD 5px;
+    padding: 5px;
+}
+
+button {
+    width: fit-content;
+    height: fit-content;
+    background: #333;
+    border-radius: 5%;
+    outline: none;
+    color: #fff;
 }
 </style>
