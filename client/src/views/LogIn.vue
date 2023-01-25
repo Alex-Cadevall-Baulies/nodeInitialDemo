@@ -21,8 +21,8 @@ import { ref } from 'vue'
 
 export default {
     setup() {
-        const username = ref('')
-        const password = ref('')
+        let username = ref('')
+        let password = ref('')
         const router = useRouter()
 
         const checkData = async () => {
