@@ -87,7 +87,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgb(214, 152, 18);
+    background-color: orange;
     height: 100vh;
 }
 

@@ -1,53 +1,60 @@
 <template>
-    <div class = "container">
-<div id = "rooms">
-        <p> Current room: </p>
-        <p> {{ room }}</p>
-        
+<div class = "container">
+
+    <div id="information">
+        <div class = "left-information">
+            <p> Current Room:  <span class = "bold"> {{ room }} </span></p>
+        </div>
+        <div class="right-information">
+            <p> Current User: <span class = "bold"> {{ username }} </span> <button id = "logout" @click="logout">Logout</button> </p>
+        </div>
+    </div>
+
+<div id="sideInfo">
+    <div id="rooms">
         <div id="roomBar">
             <form id="roomForm" action="" @submit.prevent="addRoom">
-                <input id="input" autocomplete="off" v-model="room" />
-                <button>Add Room</button>
+                <input id="roomInput" autocomplete="off" v-model="room" />
+                <button id="addRoom">Add Room</button>
             </form>
         </div>
 
-    <div>
-        <div v-for="room in subscribedRooms" :key="room">
+    <div id="contentBox">
+        <p id="insideTitle">Registered Rooms</p>
+        <div id="elementList" v-for="room in subscribedRooms" :key="room">
             <button id = "roomName" @click="enterRoom(room)"> {{ room }}</button>
             <button id = "deleteRoom" @click="deleteRoom(room)"> X </button>
         </div>
+    </div>
+    
+    <div id="users">
+        <div id="contentBox">
+        <p id="insideTitle">Connected Users</p>
+        <div id="elementList" v-for="username in connectedUsers" :key="username">
+            <button id = "user"> {{ username }}</button>
+        </div>
+    </div>
+    </div>
 
     </div>
     </div>
 
     <div id="chat">
+        <div id = "chatbox">
         <div v-if="noMessages">
             No messages yet, be the first one to post!
         </div>
-        <div v-for="item in chat" :key="item">
-            <span>{{ item.username }} : {{ item.message }}</span>
+        <div  id="elementList" v-for="item in chat" :key="item" :class="{'my-message': item.username === username, 'recived-message': item.username !== username}">
+            <span>  <span class = "bold"> {{ item.username }} </span> : {{ item.message }}</span>
         </div>
+    </div>
         
         <div id="messageBar">
             <form id="messageForm" action="" @submit.prevent="sendMessage">
-                <input id="input" autocomplete="off" required v-model="newMessage" />
+                <input id="messageInput" autocomplete="off" required v-model="newMessage" />
                 <button>Send</button>
             </form>
         </div>
-    </div>
-
-    
-    <div id = "users">
-    <p> Current User: </p>
-    <p>{{ username }}</p>
-    <button id = "logout" @click="logout">Logout</button>
-
-    <div id="connected">
-        <p>Connected Users:</p>
-        <div v-for="username in connectedUsers" :key="username">
-            <ul> {{ username }}</ul>
-        </div>
-    </div>
     </div>
 </div>
 </template>
@@ -334,36 +341,142 @@ export default {
 
 <style>
 .container {
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     margin: 0
-
 }
-#users{
+
+#information {
+    height: 50px;
+    width: 100%;
+}
+
+.left-information {
     float: left;
-    height: 100vh;
-    width: 20%;
-    display: flex;
-    flex-flow: column;
-    border: solid #5B6DCD 5px;
-    padding: 5px;
+    width: 50%;
+}
+
+.right-information{
+    float: right;
+    width: 50%;
+    text-align: right;
 }
 #chat {
     float: left;
-    height: 100vh;
-    width: 45%;
+    height: 100%;
+    width: 75%;
     display: flex;
     flex-flow: column;
-    border: solid #5B6DCD 5px;
     padding: 5px;
+    overflow: auto;
 }
-#rooms{
+
+#chatbox {
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #a7a7a7;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    border-bottom: 4px solid #a7a7a7;
+    border-top: 4px solid;
+}
+
+.my-message {
+    text-align: right;
+}
+
+.recived-message {
+    text-align: left;
+}
+
+.bold {
+    font-weight: bold
+}
+
+.logout {
+    margin-left: 5px
+}
+
+#messageBar {
+    margin: 0 auto;
+    margin-bottom: 25px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #a7a7a7;
+    overflow: auto;
+    width: 100%;
+    border-radius: 4px;
+    border-bottom: 4px solid #a7a7a7;
+    border-top: 4px solid;
+}
+#messageInput {
+    width: 85%;
+    margin-right: 5px;
+ }
+
+#sideInfo{
     float: left;
-    height: 100vh;
+    height: 100%;
     width: 20%;
     display: flex;
     flex-flow: column;
-    border: solid #5B6DCD 5px;
     padding: 5px;
+}
+
+#roomForm {
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #a7a7a7;
+    overflow: auto;
+    width: 90%;
+    border-radius: 4px;
+    border-bottom: 4px solid #a7a7a7;
+    border-top: 4px solid;
+}
+
+#contentBox {
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #a7a7a7;
+    overflow: auto;
+    width: 90%;
+    border-radius: 4px;
+    border-bottom: 4px solid #a7a7a7;
+    border-top: 4px solid;
+}
+
+#roomInput{
+    margin-bottom: 2px
+}
+
+#addRoom{
+    float: right
+}
+
+#elementList{
+    margin-bottom: 2px
+}
+
+#roomName{
+    width: 80%;
+}
+
+#deleteRoom{
+    width: 20%
+}
+ #insideTitle {
+    text-align: center;
+    border-bottom: 1px solid #a7a7a7
+ }
+#user {
+    width: 100%
 }
 
 button {
