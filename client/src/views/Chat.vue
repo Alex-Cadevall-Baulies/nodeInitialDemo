@@ -10,9 +10,10 @@
         </div>
     </div>
 
+    <div id="contentInfo">
 <div id="sideInfo">
     <div id="rooms">
-        <div id="roomBar">
+        <div id="contentBox">
             <form id="roomForm" action="" @submit.prevent="addRoom">
                 <input id="roomInput" autocomplete="off" v-model="room" />
                 <button id="addRoom">Add Room</button>
@@ -36,6 +37,7 @@
     </div>
     </div>
 
+
     </div>
     </div>
 
@@ -56,6 +58,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 </template>
 
@@ -364,22 +367,24 @@ export default {
     text-align: right;
 }
 #chat {
-    float: left;
-    height: 100%;
-    width: 75%;
-    display: flex;
-    flex-flow: column;
-    padding: 5px;
-    overflow: auto;
+    max-width: 100%;
+}
+
+#contentInfo {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    width: 100%;
 }
 
 #chatbox {
-    margin: 0 auto;
+    margin: 5 auto;
     margin-bottom: 5px;
     padding: 10px;
     background: #fff;
     border: 1px solid #a7a7a7;
-    width: 100%;
     height: 100%;
     border-radius: 4px;
     border-bottom: 4px solid #a7a7a7;
@@ -409,7 +414,6 @@ export default {
     background: #fff;
     border: 1px solid #a7a7a7;
     overflow: auto;
-    width: 100%;
     border-radius: 4px;
     border-bottom: 4px solid #a7a7a7;
     border-top: 4px solid;
@@ -420,25 +424,7 @@ export default {
  }
 
 #sideInfo{
-    float: left;
-    height: 100%;
-    width: 20%;
-    display: flex;
-    flex-flow: column;
-    padding: 5px;
-}
-
-#roomForm {
-    margin: 0 auto;
-    margin-bottom: 5px;
-    padding: 10px;
-    background: #fff;
-    border: 1px solid #a7a7a7;
-    overflow: auto;
-    width: 90%;
-    border-radius: 4px;
-    border-bottom: 4px solid #a7a7a7;
-    border-top: 4px solid;
+    max-width: 100%;
 }
 
 #contentBox {
@@ -455,7 +441,7 @@ export default {
 }
 
 #roomInput{
-    margin-bottom: 2px
+    margin-bottom: 2px;
 }
 
 #addRoom{
