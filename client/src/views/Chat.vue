@@ -88,7 +88,9 @@ export default {
         })
 
         socket.on('login', (data) => {
-            connectedUsers.value.push(data.username)
+            if(!connectedUsers.value.includes(data.username)) {
+                connectedUsers.value.push(data.username)
+            }
             chat.value.push(data)
             connectUsers()
         }),
@@ -146,7 +148,7 @@ export default {
             socket.emit('leaveRoom', data)
         }
 
-        const enterRoom = async (newRoom) => {
+        const enterRoom = (newRoom) => {
             console.log(`this is the ${newRoom}`)
             //We logout user from previous room
             leaveRoom()
@@ -313,7 +315,7 @@ export default {
             }
         }
 
-        const startChat = async () => {
+        const startChat = () => {
             username.value = localStorage.getItem('user')
             getRooms()
             getMessages()
@@ -327,7 +329,8 @@ export default {
             socket.emit('new-user', data)
         }
 
-        const leaveChat = async () => {
+        const leaveChat = () => {
+            leaveRoom()
             disconnectUsers()
             if (socket)
                 socket.disconnect()
