@@ -3,28 +3,22 @@
 - connect server with frontend [x]
 - make instalation guide []
     - express, socket.io, vue, mongoose
-- manage users []
+- manage users [X]
     - create login page [x]
     - create sing up page [x]
     - identify user by token [x]
     - allow logout [x]
-    - create user connected list []
-    - create user account [] (add image, change name, emojis...)
+    - create user connected list [X]
 - create database []
     - link database to chat messages [x]
     - link database to chat rooms created []
     - link database to log-in / singup [x]
-- create chat []
+- create chat [x]
     - allow users to chat between them [x]
     - allow users to chat on private rooms [x]
-    - allow users to send private messages []
-- create rooms []
-    - put rooms on nested pages []
-    - show rooms joined in the left [] (array and database)
-    - allow user to delete them []
-- create transition screen (screensaver, settimeout (in x minutes show opacity 100%)) []
-
-PENDING: show nickname NOT username on chat
+- create rooms [X]
+    - show rooms joined in the left [X] (array and database)
+    - allow user to delete them [X]
 
 VUE
 https://router.vuejs.org/guide/essentials/nested-routes.html
@@ -47,6 +41,8 @@ https://www.bezkoder.com/vue-3-refresh-token/
 
 SOCKET:
 https://masteringbackend.com/posts/build-a-real-time-chat-app-with-vue-3-socket-io-and-nodejs/
+
+Typo: https://fonts.google.com/specimen/Quicksand
 
 
 

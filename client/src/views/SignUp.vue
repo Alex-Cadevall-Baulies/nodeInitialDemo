@@ -1,17 +1,22 @@
 <template>
-    <div id="login">
-        <form id="login" action="" @submit.prevent="createData">
-            <p>Username: <input id="username" autocomplete="off" required v-model="username" /></p>
-            <p>Chat Nickname: <input id="nickname" autocomplete="off" required v-model="nickname" /></p>
-            <p>Password: <input id="password" autocomplete="off" required v-model="password" /></p>
-            <p>Confirm Password: <input id="confirmPassword" autocomplete="off" required v-model="confirmPassword" />
-            </p>
-            <button>submit</button>
-        </form>
+    <main>
+        <div class="box">
+            <div class="text" id="login">
+                <form id="login" action="" @submit.prevent="createData">
+                    <p>Username: <input id="username" autocomplete="off" required v-model="username" /></p>
+                    <p>Chat Nickname: <input id="nickname" autocomplete="off" required v-model="nickname" /></p>
+                    <p>Password: <input id="password" autocomplete="off" required v-model="password" /></p>
+                    <p>Confirm Password: <input id="confirmPassword" autocomplete="off" required
+                            v-model="confirmPassword" />
+                    </p>
+                    <button>submit</button>
+                </form>
 
-        <p>Already have an account? <RouterLink :to="{ name: 'login' }">Click here</RouterLink>
-        </p>
-    </div>
+                <p>Already have an account? <RouterLink :to="{ name: 'login' }">Click here</RouterLink>
+                </p>
+            </div>
+        </div>
+    </main>
 </template>
 
 <script>
@@ -71,11 +76,47 @@ export default {
                 console.log(err)
             }
         }
-        return {username, nickname, password, confirmPassword, createData}
+        return { username, nickname, password, confirmPassword, createData }
     },
 }
 </script>
 
 <style>
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(214, 152, 18);
+    height: 100vh;
+}
+
+.box {
+    height: 500px;
+    width: 500px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.text {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    width: 70px;
+    height: 30px;
+    background: #333;
+    border-radius: 5%;
+    outline: none;
+    color: #fff;
+}
 
 </style>
