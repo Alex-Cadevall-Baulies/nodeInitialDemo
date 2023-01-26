@@ -13,9 +13,9 @@ router.get('/', async (req, res) => {
         console.log(playerList)
 
         if(!playerList.length) {
-            res.status(400).json('No players registered yet!')
+            res.status(400).json({message: 'No players registered yet!'})
         } else {
-            res.status(200).json(playerList)
+            res.status(200).json({message: playerList})
         }
     } catch (err) { console.log(err), res.send(500) }
 });
@@ -29,9 +29,9 @@ router.post('/', async (req, res) => {
         const userConfirmation = await Player.createPlayer()
         
         if(userConfirmation) {
-            res.status(200).json(userConfirmation)
+            res.status(200).json({message: userConfirmation})
         } else {
-            res.status(400).json(`${newUsername} already registered`)
+            res.status(400).json({message: `${newUsername} already registered`})
         }
 
     } catch (err) { console.log(err), res.send(500)}
@@ -48,9 +48,9 @@ router.put('/:id', async (req, res) => {
         const changeUser = await user.modifyPlayer(newUsername)
         
         if (changeUser == `jugador registrat`) {
-            res.status(400).json(changeUser)
+            res.status(400).json({message: changeUser})
         } else if (changeUser) {
-            res.status(200).json(changeUser)
+            res.status(200).json({message: changeUser})
         } else {
             res.status(400).json(`ID ${req.params.id} no registrat`)
         }

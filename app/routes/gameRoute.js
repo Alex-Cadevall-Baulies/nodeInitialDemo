@@ -19,14 +19,14 @@ router
         if (addThrow.total === 7) {
                 await user.registerWin()
 
-                res.status(201).json(`Total de la tirada ${addThrow.total}. Victoria registrada!`)
+                res.status(201).json({message: `Total de la tirada ${addThrow.total}. Victoria registrada!`})
             } else if (addThrow.total !== 7) {
                 await user.registerLoses()
 
-                res.status(201).json(`Total de la tirada ${addThrow.total}. Partida registrada, torna-ho a intentar!`)
+                res.status(201).json({message: `Total de la tirada ${addThrow.total}. Partida registrada, torna-ho a intentar!`})
             }
         } else {
-            res.status(400).json(`Jugador amb ID ${userID} no trobat, registre't per jugar!`)
+            res.status(400).json({message: `Jugador amb ID ${userID} no trobat, registre't per jugar!`})
         }
     })
     // DELETE player's throws
@@ -43,9 +43,9 @@ router
         let throwList = await NewThrow.getThrows(playerID)
         
         if(!throwList.length) {
-            res.status(400).json('Usuari sense tirades')
+            res.status(400).json({message: 'Usuari sense tirades'})
         } else {
-            res.status(200).json(throwList)
+            res.status(200).json({message: throwList})
         }
         
     })

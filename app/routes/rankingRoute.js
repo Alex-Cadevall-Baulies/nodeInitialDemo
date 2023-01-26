@@ -9,9 +9,9 @@ router.get('/', async (req, res) => {
     let playerList = await players.orderPlayers()
 
     if(!playerList.length) {
-        res.status(400).json('Cap jugador registrat')
+        res.status(400).json({message: 'Cap jugador registrat'})
     } else {
-        res.status(200).json(playerList)
+        res.status(200).json({message: playerList})
     }
     
 })
@@ -20,9 +20,9 @@ router.get('/loser', async (req, res) => {
     let playerLoser = await players.getLoser()
 
     if(!playerLoser.length) {
-        res.status(400).json('Cap jugador registrat')
+        res.status(400).json({message:'Cap jugador registrat'})
     } else {
-        res.status(200).json(playerLoser)
+        res.status(200).json({message: playerLoser})
     }
 })
 
@@ -31,9 +31,9 @@ router.get('/winner', async (req, res) => {
     let playerWinner = await players.getWinner()
 
     if(!playerWinner.length) {
-        res.status(400).json('Cap jugador registrat')
+        res.status(400).json({message:'Cap jugador registrat'})
     } else {
-        res.status(200).json(playerWinner)
+        res.status(200).json({message: playerWinner})
     }
 })
 
