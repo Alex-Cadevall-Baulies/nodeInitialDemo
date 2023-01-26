@@ -83,11 +83,24 @@ export default {
             { query: { token: localStorage.getItem('token') } })
 
         onMounted(() => {
-            startChat()
+            username.value = localStorage.getItem('user')
+            getRooms()
+            getMessages()
+            getConnectedUsers()
+
+            const data = {
+                username: username.value,
+                chatroom: room.value
+            }
+
+            socket.emit('new-user', data)
         })
 
         onUnmounted(() => {
-            leaveChat()
+            leaveRoom()
+            disconnectUsers()
+            if (socket)
+                socket.disconnect()
         })
 
         socket.on('login', (data) => {
@@ -316,27 +329,6 @@ export default {
                 const index = subscribedRooms.value.indexOf(resDB.chatroom);
                 subscribedRooms.value.splice(index, 1);
             }
-        }
-
-        const startChat = () => {
-            username.value = localStorage.getItem('user')
-            getRooms()
-            getMessages()
-            getConnectedUsers()
-
-            const data = {
-                username: username.value,
-                chatroom: room.value
-            }
-
-            socket.emit('new-user', data)
-        }
-
-        const leaveChat = () => {
-            leaveRoom()
-            disconnectUsers()
-            if (socket)
-                socket.disconnect()
         }
 
         return { username, connectedUsers, room, subscribedRooms, room, noMessages, chat, newMessage, logout, enterRoom, deleteRoom, addRoom, sendMessage }
