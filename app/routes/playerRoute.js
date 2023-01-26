@@ -47,7 +47,14 @@ router.put('/:id', async (req, res) => {
         const user = new playerClass(currentUsername)
         const changeUser = await user.modifyPlayer(newUsername)
         
-        res.send(changeUser)
+        if (changeUser == `jugador registrat`) {
+            res.status(400).json(changeUser)
+        } else if (changeUser) {
+            res.status(200).json(changeUser)
+        } else {
+            res.status(400).json(`ID ${req.params.id} no registrat`)
+        }
+        
 
     } catch (err) { console.log(err) }
 })

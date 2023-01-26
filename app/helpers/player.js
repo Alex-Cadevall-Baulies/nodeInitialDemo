@@ -82,9 +82,6 @@ class Player {
     }
 
     async modifyPlayer(newUsername) {
-
-        console.log(newUsername)
-
         try {
             let checkUser = await playerInfo.findOne({
                 where: {
@@ -106,13 +103,11 @@ class Player {
 
                     return `Usuari modificat, nou nom d'usuari: ${this.username}`
                 } else {
-                    new Error(`${this.username} està ja registrat, prova amb un altre`)
-                    return `${this.username} està ja registrat, prova amb un altre`
+                    return `jugador registrat`
                 }
 
             } else {
-                new Error(`ID ${this.username} no registrat`)
-                return `ID ${this.username} no registrat`
+                return undefined
             }
         } catch (err) {
             return err
