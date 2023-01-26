@@ -89,6 +89,8 @@ main {
     justify-content: center;
     background-color: orange;
     height: 100vh;
+    font-family: "Quicksand";
+    font-size: 16px
 }
 
 .box {
