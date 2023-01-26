@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     await changeURL(fullUrl)
     
-    res.json(userInfo)
+    res.json({files : userInfo})
     }
     catch (err) {console.log(err)}
 })
