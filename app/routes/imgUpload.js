@@ -28,9 +28,9 @@ router.get('/', function (req, res) {
     const files = fs.readdirSync('./views/images');
 
     if (!files.length) {
-      res.send('No files found')
+      res.send({msg: 'No files found'})
     } else {
-      res.json(files)
+      res.json({files: files})
     }
 
 
@@ -39,10 +39,10 @@ router.get('/', function (req, res) {
 router.post('/', upload.single('file-send'), (req, res) => {
   try {
     console.log(req.file)
-    res.status(201).json(`Document ${req.file.originalname} guardat correctament`)
+    res.status(201).json({msg:`Document ${req.file.originalname} guardat correctament`})
   } catch (err) {
     console.log(err)
-    res.status(400).json(`Document no enviat, prova amb jpg, png o gif`)
+    res.status(400).json({msg:`Document no enviat, prova amb jpg, png o gif`})
   }
 })
 
