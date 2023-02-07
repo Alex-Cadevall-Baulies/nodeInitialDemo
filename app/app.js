@@ -17,7 +17,7 @@ throwdb.belongsTo(playerdb)
 
 sequelize
     .sync({alter: true})
-    .then((result) => console.log(result))
+    .then(console.log(`database connected`))
     .catch((err) => console.log(err))
 
 app.listen(port, () => console.log(`Running on http://localhost:${port}`))

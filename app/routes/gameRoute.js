@@ -51,8 +51,8 @@ router
     })
 
     //Other routes give error
-router.get('*', function(res){
-    res.status(404).json({message: 'route not found'});
-  });
+router.get('*', (req, res) => {
+    res.status(404).json({ message: 'route not found' });
+});
 
 module.exports = router

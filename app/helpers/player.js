@@ -8,8 +8,6 @@ class Player {
 
     async getPlayers() {
         let playerList = await playerInfo.findAll({})
-
-        console.log(playerList)
         return playerList
     }
 
@@ -44,8 +42,6 @@ class Player {
                 }
             });
 
-            console.log(checkUser)
-
             if (checkUser.length === 0 && this.username === '') {
                 let randomID = await playerInfo.count()
                 this.username = `ANÒNIM${randomID}`
@@ -67,8 +63,6 @@ class Player {
                     id: this.username
                 }
             });
-
-            console.log(checkUser)
 
             if (checkUser.length === 0) {
                 return false
@@ -121,11 +115,8 @@ class Player {
         })
 
         let newWinAmount = playerStats.won_games + 1
-        console.log(newWinAmount)
         let totalPlayed = newWinAmount + playerStats.losed_games
-        console.log(totalPlayed)
-        let newVictoryPercentage = ((playerStats.won_games / totalPlayed) * 100).toFixed(2)
-        console.log(newVictoryPercentage)
+        let newVictoryPercentage = ((newWinAmount / totalPlayed) * 100).toFixed(2)
 
         await playerStats.set({
             won_games: newWinAmount,
@@ -146,9 +137,7 @@ class Player {
         })
 
         let newLostAmount = playerStats.losed_games + 1
-        console.log(newLostAmount)
         let totalPlayed = playerStats.won_games + newLostAmount
-        console.log(totalPlayed)
         let newVictoryPercentage = ""
 
         if (playerStats.won_games == 0) {
@@ -189,8 +178,6 @@ class Player {
                     ['victory_percentage', 'ASC']
                 ],
                 limit: 1 })
-            
-            console.log(player)
             return player
         } catch (err) {
             return err
@@ -205,8 +192,6 @@ class Player {
                     ['victory_percentage', 'DESC']
                 ],
                 limit: 1 })
-            
-            console.log(player)
             return player
         } catch (err) {
             return err

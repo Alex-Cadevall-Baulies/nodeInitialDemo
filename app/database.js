@@ -1,4 +1,4 @@
-require('dotenv').config('../.env')
+require('dotenv').config('./.env')
 const {Sequelize} = require('sequelize');
 const mysql = require('mysql2');
 
@@ -9,10 +9,6 @@ const connection = mysql.createConnection({
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD
 });
-
-console.log(process.env.DATABASE_HOST)
-console.log(process.env.DATABASE_USER)
-console.log(process.env.DATABASE_PASSWORD)
 
 // Run create database statement
 connection.query(

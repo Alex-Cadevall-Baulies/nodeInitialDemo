@@ -10,8 +10,6 @@ router.get('/', async (req, res) => {
         const Player = new playerClass()
         const playerList = await Player.getPlayers()
 
-        console.log(playerList)
-
         if (!playerList.length) {
             res.status(400).json({ message: 'No players registered yet!' })
         } else {
@@ -71,7 +69,7 @@ router.put('/:id', async (req, res) => {
 })
 
 //Other routes give error
-router.get('*', function (res) {
+router.get('*', (req, res) => {
     res.status(404).json({ message: 'route not found' });
 });
 

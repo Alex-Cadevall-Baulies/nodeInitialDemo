@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/loser', async (req, res) => {
     let playerLoser = await players.getLoser()
 
-    if (!playerLoser.length) {
+    if (!playerLoser) {
         res.status(400).json({ message: 'Cap jugador registrat' })
     } else {
         res.status(200).json({ message: playerLoser })
@@ -30,7 +30,7 @@ router.get('/loser', async (req, res) => {
 router.get('/winner', async (req, res) => {
     let playerWinner = await players.getWinner()
 
-    if (!playerWinner.length) {
+    if (!playerWinner) {
         res.status(400).json({ message: 'Cap jugador registrat' })
     } else {
         res.status(200).json({ message: playerWinner })
@@ -38,7 +38,7 @@ router.get('/winner', async (req, res) => {
 })
 
 //Other routes give error
-router.get('*', function (res) {
+router.get('*', (req, res) => {
     res.status(404).json({ message: 'route not found' });
 });
 
