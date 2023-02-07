@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/LogIn.vue'
 import Signup from '../views/SignUp.vue'
 import Chat from '../views/Chat.vue'
-import Loading from '../views/Welcome.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,11 +22,6 @@ const router = createRouter({
       component: Chat,
       props: true,
       meta: {requiresAuth: true}
-    },
-    {
-      path: '/loading',
-      name: 'loading',
-      component: Loading
     }
   ]
 })

@@ -30,6 +30,7 @@ export default {
         const password = ref('')
         const confirmPassword = ref('')
         const router = useRouter()
+        const URL = import.meta.env.VITE_APP_BE_CONNECTION
 
         const createData = async () => {
             //we check if password and confirm password match, if not we return null
@@ -41,7 +42,7 @@ export default {
 
             //if password and c. password match we send info through dataService.js
             try {
-                const res = await fetch('http://localhost:8080/user/register', {
+                const res = await fetch(`${URL}/user/register`, {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"

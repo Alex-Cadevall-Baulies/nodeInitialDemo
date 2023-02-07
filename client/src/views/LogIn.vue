@@ -24,6 +24,7 @@ export default {
         let username = ref('')
         let password = ref('')
         const router = useRouter()
+        const URL = import.meta.env.VITE_APP_BE_CONNECTION
 
         const checkData = async () => {
             if(!username.value || !password.value) {
@@ -31,7 +32,7 @@ export default {
             }
 
             try {
-                const res = await fetch('http://localhost:8080/user/login', {
+                const res = await fetch(`${URL}/user/login`, {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"

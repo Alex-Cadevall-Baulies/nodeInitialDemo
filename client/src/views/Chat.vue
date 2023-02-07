@@ -77,9 +77,10 @@ export default {
         const chat = ref([])
         const subscribedRooms = ref([])
         const router = useRouter()
+        const URL = import.meta.env.VITE_APP_BE_CONNECTION
 
         //Vue3 composition API makes us call socket inside setup
-        const socket = io(`http://localhost:8080`,
+        const socket = io(`${URL}`,
             { query: { token: localStorage.getItem('token') } })
 
         onMounted(() => {
@@ -124,9 +125,9 @@ export default {
             }),
 
             socket.on('joined', (joinedData) => {
-                connectedUsers.value.push(joinedData.username)
-                chat.value.push(joinedData)
-                connectUsers()
+                    connectedUsers.value.push(joinedData.username)
+                    chat.value.push(joinedData)
+                    connectUsers()
             })
 
         const sendMessage = async () => {
@@ -138,7 +139,7 @@ export default {
                         "message": newMessage.value,
                     }
 
-                    await fetch('http://localhost:8080/chat', {
+                    await fetch(`${URL}/chat`, {
                         method: 'POST',
                         headers: {
                             "Content-type": "application/json"
@@ -160,11 +161,12 @@ export default {
             const data = {
                 "username": username.value,
                 "chatroom": room.value,
-            }
+            }            
             socket.emit('leaveRoom', data)
         }
 
         const enterRoom = (newRoom) => {
+            if(newRoom === room.value) return
             console.log(`this is the ${newRoom}`)
             //We logout user from previous room
             leaveRoom()
@@ -182,7 +184,7 @@ export default {
         }
 
         const connectUsers = async () => {
-            await fetch('http://localhost:8080/chat/connect', {
+            await fetch(`${URL}/chat/connect`, {
                 method: 'PUT',
                 headers: {
                     "Content-type": "application/json"
@@ -195,7 +197,7 @@ export default {
         }
 
         const disconnectUsers = async () => {
-            await fetch('http://localhost:8080/chat/connect', {
+            await fetch(`${URL}/chat/connect`, {
                 method: 'DELETE',
                 headers: {
                     "Content-type": "application/json"
@@ -208,7 +210,7 @@ export default {
         }
 
         const getConnectedUsers = async () => {
-            const usersOnline = await fetch('http://localhost:8080/chat/connect', {
+            const usersOnline = await fetch(`${URL}/chat/connect`, {
                 method: 'GET',
                 headers: {
                     "Content-type": "application/json"
@@ -238,7 +240,7 @@ export default {
 
         const getMessages = async () => {
             try {
-                const res = await fetch('http://localhost:8080/chat', {
+                const res = await fetch(`${URL}/chat`, {
                     method: 'GET',
                     headers: {
                         "Content-type": "application/json"
@@ -265,7 +267,7 @@ export default {
         const addRoom = async () => {
             if (room.value) {
                 try {
-                    const res = await fetch('http://localhost:8080/user/rooms', {
+                    const res = await fetch(`${URL}/user/rooms`, {
                         method: 'PUT',
                         headers: {
                             "Content-type": "application/json"
@@ -291,7 +293,7 @@ export default {
 
         const getRooms = async () => {
             try {
-                const res = await fetch('http://localhost:8080/user/rooms', {
+                const res = await fetch(`${URL}/user/rooms`, {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json",
@@ -312,7 +314,7 @@ export default {
 
         const deleteRoom = async (room) => {
             if (room == 'main') return alert(`main room cannot be deleted!`)
-            const res = await fetch('http://localhost:8080/user/rooms', {
+            const res = await fetch(`${URL}/user/rooms`, {
                 method: 'DELETE',
                 headers: {
                     "Content-type": "application/json"

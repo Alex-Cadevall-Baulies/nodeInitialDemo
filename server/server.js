@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken')
 //we setup our socket by passing our http and frontend port
 const io = require("socket.io")(http, {
   cors: {
-      origins: "`http://localhost:5173/`"
+      origins: process.env.FE_CONNECTION
   }
 });
 
