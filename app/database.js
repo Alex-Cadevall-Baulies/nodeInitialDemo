@@ -10,6 +10,10 @@ const connection = mysql.createConnection({
   password: process.env.DATABASE_PASSWORD
 });
 
+console.log(process.env.DATABASE_HOST)
+console.log(process.env.DATABASE_USER)
+console.log(process.env.DATABASE_PASSWORD)
+
 // Run create database statement
 connection.query(
       `CREATE DATABASE IF NOT EXISTS ` + process.env.DATABASE_NAME,

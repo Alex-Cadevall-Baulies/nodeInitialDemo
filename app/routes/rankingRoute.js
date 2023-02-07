@@ -8,21 +8,21 @@ const players = new playerClass("")
 router.get('/', async (req, res) => {
     let playerList = await players.orderPlayers()
 
-    if(!playerList.length) {
-        res.status(400).json({message: 'Cap jugador registrat'})
+    if (!playerList.length) {
+        res.status(400).json({ message: 'Cap jugador registrat' })
     } else {
-        res.status(200).json({message: playerList})
+        res.status(200).json({ message: playerList })
     }
-    
+
 })
 // GET loser player with less success %
 router.get('/loser', async (req, res) => {
     let playerLoser = await players.getLoser()
 
-    if(!playerLoser.length) {
-        res.status(400).json({message:'Cap jugador registrat'})
+    if (!playerLoser.length) {
+        res.status(400).json({ message: 'Cap jugador registrat' })
     } else {
-        res.status(200).json({message: playerLoser})
+        res.status(200).json({ message: playerLoser })
     }
 })
 
@@ -30,11 +30,16 @@ router.get('/loser', async (req, res) => {
 router.get('/winner', async (req, res) => {
     let playerWinner = await players.getWinner()
 
-    if(!playerWinner.length) {
-        res.status(400).json({message:'Cap jugador registrat'})
+    if (!playerWinner.length) {
+        res.status(400).json({ message: 'Cap jugador registrat' })
     } else {
-        res.status(200).json({message: playerWinner})
+        res.status(200).json({ message: playerWinner })
     }
 })
+
+//Other routes give error
+router.get('*', function (res) {
+    res.status(404).json({ message: 'route not found' });
+});
 
 module.exports = router

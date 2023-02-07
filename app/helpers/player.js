@@ -1,5 +1,4 @@
 const playerInfo = require('../models/playerdb');
-const sequelize = require('../database');
 
 
 class Player {
