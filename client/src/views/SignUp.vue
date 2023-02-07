@@ -55,7 +55,6 @@ export default {
                     })
                 })
                 const resDB = await res.json()
-                console.log(resDB)
 
                 //If registration works we confirm and send to login
                 if (resDB.success === true) {

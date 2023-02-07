@@ -22,7 +22,6 @@ router.post('/', async (req, res) => {
         chatroom,
         message
     } = req.body
-    console.log(req.body)
 
     const chatMessage = await new Chat({
         username,
@@ -61,9 +60,6 @@ router.put('/connect', async (req, res) => {
             chatroom
         } = req.body
 
-        console.log('I am on /connect')
-        console.log(req.body)
-
         //We check if connection exists
         const checkConnection = await Connections.findOne(
             { username: username })
@@ -78,8 +74,6 @@ router.put('/connect', async (req, res) => {
                 username: username,
                 chatroom: chatroom
             })
-
-            console.log(connection)
             console.log('connection updated')
         } else {
             const connection = await new Connections({
@@ -88,7 +82,6 @@ router.put('/connect', async (req, res) => {
             })
 
             connection.save()
-            console.log(connection)
             console.log('connection added')
         }
 
@@ -109,9 +102,6 @@ router.delete('/connect', async (req, res) => {
             username,
             chatroom
         } = req.body
-
-        console.log('I am on /connect')
-        console.log(req.body)
 
         //Connection should already exist so we delete it
         const checkConnection = await Connections.deleteOne(

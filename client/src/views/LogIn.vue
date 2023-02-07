@@ -44,7 +44,7 @@ export default {
                     })
                 })
                 const resDB = await res.json()
-                console.log(resDB)
+
                 if (resDB.success === true) {
                     localStorage.setItem('token', resDB.accessToken)
                     localStorage.setItem('user', resDB.nickname)

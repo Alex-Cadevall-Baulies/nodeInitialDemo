@@ -113,8 +113,7 @@ export default {
         }),
 
             socket.on('showMessage', (data) => {
-                console.log('showMessage activated')
-                console.log(data)
+                console.log(`this is the data from showMessage: ${data}`)
                 chat.value.push(data)
             }),
 

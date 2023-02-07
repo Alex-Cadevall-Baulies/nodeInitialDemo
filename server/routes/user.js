@@ -17,7 +17,6 @@ router.post('/register', async (req, res) => {
         nickname,
         password
     } = req.body
-    console.log(req.body)
 
     //We check if username is already taken
     const usernameCheck = await User.findOne({
@@ -74,8 +73,6 @@ router.post('/login', async (req, res) => {
         password
     } = req.body
 
-    console.log(req.body)
-
     //We check if user exist
     const usernameCheck = await User.findOne({
         username: username
@@ -114,13 +111,10 @@ router.post('/login', async (req, res) => {
     router.post('/rooms', async (req, res) => {
         try{
             let user = req.body.username
-            console.log(user)
             //user should always exist as we previously verified it
             const getRooms = await User.findOne({
                 nickname: user
             })
-            console.log('this is the get rooms')
-            console.log(getRooms)
             res.status(200).json({
                 success: true, 
                 chatroom: getRooms.chatRooms
@@ -139,16 +133,12 @@ router.post('/login', async (req, res) => {
                 chatroom
             } = req.body
     
-            console.log(req.body)
-    
             //we find user and add new chatroom into mogodb user chatroom array
             const updateRoom = await User.updateOne(
                 { nickname: username },
                 //we use $addToSet as, if the room was already created, it will not duplicate it
                 { $addToSet: { chatRooms: chatroom } },
             );
-    
-            console.log(updateRoom)
     
             if (updateRoom.modifiedCount > 0) {
                 res.status(200).json({ 
@@ -180,8 +170,6 @@ router.post('/login', async (req, res) => {
                 //we use $addToSet as, if the room was already created, it will not duplicate it
                 { $pull: { chatRooms: chatroom } },
             );
-
-            console.log(updateRoom)
 
             if (updateRoom.modifiedCount > 0) {
                 res.status(200).json({ 
