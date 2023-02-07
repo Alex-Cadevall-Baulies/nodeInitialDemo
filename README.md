@@ -35,7 +35,9 @@ Sockets en `backend`:
 
 ## Funcionalitats
 - Funcionalitats en `Login`
-<img src="./readme_images/login_wp.png" width="250" height="250"> Revisió de contrasenya amb encriptat i desencriptat
-<img src="/readme_images/login_token.png" width="250" height="250">Registre de Token i usuari al localStorage
-<img src="./readme_images/login_signup.png" width="250" height="250">hipervincle a signup en cas d'usuari nou
+<div>
+<img src="./readme_images/login_wp.png" width="250" height="250"> Revisió de contrasenya amb encriptat i desencriptat</img>
+<img src="/readme_images/login_token.png" width="250" height="250">Registre de Token i usuari al localStorage</img>
+<img src="./readme_images/login_signup.png" width="250" height="250">hipervincle a signup en cas d'usuari nou</img>
+</div>
 
