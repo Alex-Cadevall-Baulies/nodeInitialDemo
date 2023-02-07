@@ -34,12 +34,28 @@ Sockets en `backend`:
 - **disconnect:** Registra la desconexió del usuari.
 
 ## Funcionalitats
-- Funcionalitats en `Login`
-<div>
-<img src="./readme_images/login_wp.png" width="250" height="250">
-<img src="/readme_images/login_token.png" width="250">
-<img src="./readme_images/login_signup.png" width="250" height="250">
-</div>
+- Funcionalitats en `Login`:
+    - Revisió de nom d'usuari.
+    - Desencriptat de contrasenya i confirmació.
+    - Asignació de token a localStorage.
+    - Obtenció de dades d'usuari per recuperar el seu nickname.
+    - Hipervincle a `signup` en cas d'usuari nou.
+
+- Funcionalitats en `Signup`:
+    - Revisió d'usuari i nickname per asegurar que son registre únic.
+    - Comparació de contrasenya i confirmació de contrasenya.
+    - Encriptat de contrasenya.
+    - Registre d'usuari amb contrasenya encriptada.
+    - Push automátic a chat en cas d'usuari nou.
+
+- Funcionalitats en `Chat`
+    - Enviar i rebre missatges
+    - Crear sales personals (no es creen per tots els usuaris)
+    - Eliminar sales creades
+    - Veure usuaris conectats
+    - Rebre avisos  quan un usuari es conecti o desconecti de la sala
+    - Rebre els missatges escrits en una sala durant la seva absencia quan torni a entrar-hi.
+    - Desconexió amb esborrat de token
 
 
 

@@ -68,7 +68,7 @@ router.put('/connect', async (req, res) => {
 
         //if first connection we create it on, if not we update connections
         if (checkConnection) {
-            const connection = await Connections.updateOne({
+            await Connections.updateOne({
                 username: username
             }, {
                 username: username,
