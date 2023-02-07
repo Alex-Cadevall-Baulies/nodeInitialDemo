@@ -35,5 +35,7 @@ Sockets en `backend`:
 
 ## Funcionalitats
 - Funcionalitats en `Login`
-![signup_link](./README_Images/login_signup.png =50x50)
+![login_password](/Images/login_wp.png =50x50)
+![Login_signup_link](/Images/login_signup.png =50x50)
+![login_token](/Images/login_token.png =50x50)
 
