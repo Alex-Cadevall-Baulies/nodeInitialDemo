@@ -9,15 +9,15 @@ app.use(globalRouter)
 
 const sequelize = require('./database');
 
-const playerdb = require('./models/playerdb')
-const throwdb = require('./models/throwdb')
-
-playerdb.hasMany(throwdb)
-throwdb.belongsTo(playerdb)
-
 sequelize
     .sync({alter: true})
     .then(console.log(`database connected`))
     .catch((err) => console.log(err))
+
+const playerdb = require('./models/playerdb')
+const throwdb = require('./models/throwdb')
+    
+playerdb.hasMany(throwdb)
+throwdb.belongsTo(playerdb)
 
 app.listen(port, () => console.log(`Running on http://localhost:${port}`))
