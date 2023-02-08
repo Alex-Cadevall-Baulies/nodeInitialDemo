@@ -113,7 +113,6 @@ export default {
         }),
 
             socket.on('showMessage', (data) => {
-                console.log(`this is the data from showMessage: ${data}`)
                 chat.value.push(data)
             }),
 
@@ -166,7 +165,6 @@ export default {
 
         const enterRoom = (newRoom) => {
             if(newRoom === room.value) return
-            console.log(`this is the ${newRoom}`)
             //We logout user from previous room
             leaveRoom()
             room.value = newRoom
