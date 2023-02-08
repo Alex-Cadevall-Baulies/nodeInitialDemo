@@ -1,51 +1,61 @@
+## Per executar:
+- Obre terminal i navega a les carpetes [`server`] i [`client`]
+- S'ha de fer [`npm install`] dins d'ambdues carpetes
+- Dins les carpetes server i client crea un document `.env` amb els elements definits al document `.env-template` que trobarás a cada carpeta.
+- Per iniciar el servidor executa el backend i front end 
+    - Backend: dintre la carpeta server: [`npm start`]
+    - Frontend: dintre la carpeta client: [`npm start`]
 
-# Node Initial Project
+## Endpoints
+El `frontend` te un total de 3 endpoints:
+- **Login:** Encarregat de fer login als usuaris ja existents.
+    - El usuari, ja creat, fa servir el seu nom d'usuari i contrasenya per entrar.
+- **Singup:** Encarregat de registrar els nous usuaris.
+    - El nou usuari pot registrar el seu usuari i contrasenya desitjats i el nickname, nom amb el qual s'enviaran els missatges.
+- **Chat:** Encarregat de creació de sales i gestió de missatges i usuaris conectats.
+    - Aquí el usuari podrà crear i eliminar sales, enviar missatges i veure als usuaris registrats en cada sala.
 
-### Project Structure
+El `backend` disposa de 2 endpoints:
+- **Chat:** Encarregat d'actualitzar la llista de missatges i usuaris conectats en cada canal.
+- **User:** Encarregat de registrar als usuaris, encriptar les contrasenyes i gestionar les sales creades.
 
-Main structure of node.js project. Folders / files:
+## Sockets
+Sockets en `backend`:
+- **login:** Actualitza el array d'usuaris conectats i emet un missatge informant que un usuari nou ha entrat a la sala.
+- **showMessage:** Actualitza el array de missatges.
+- **left:** Actualitza el array d'usuaris conectats i emet un missatge informant que ha marxat de la sala.
+- **joined:** Variació del socket login adaptat a usuaris que ja estaven conectats pero que s'han unit a una sala nova. Actualitza el array d'usuaris i informa que ha entrat a la sala.
 
-- <b>\_\_tests__</b>. Tests folder. See [Jest Docs](https://jestjs.io/es-ES/docs/configuration) and [Chai Docs](https://www.chaijs.com/)
-- <b>app</b>:
-    - <b>config</b>
-    - <b>controllers</b>
-    - <b>middlewares</b>
-    - <b>models</b>
-    - <b>routes</b>
-    - <b>helpers</b>
-    - <b>app.js</b>. Entry point.
-- <b>package.json</b>.
-- <b>.env</b>. Environment descriptor. See [dotenv doc](https://www.npmjs.com/package/dotenv).
+Sockets en `backend`:
+- **new-user:** Registra les noves entrades al xat i emet el socket `login` al frontend.
+- **sendMessage:** Registra els nous missatges i emet el socket `showMessage` al frontend.
+- **leaveRoom:** Registra sortides de sala i emet el socket `left` al frontend.
+- **joinRoom:** Registra entrades de sala i emet el socket `joined` al frontend.
+- **disconnect:** Registra la desconexió del usuari.
 
-Extras:
-- <b>.eslintrc</b>. Linter JS, static code analyzer. See [EsLint Docs](https://eslint.org/docs/user-guide/configuring/configuration-files).
-- <b>.prettierignore</b>. Code formatter. See [Prettier Config](https://prettier.io/docs/en/configuration.html) and [Prettier Ignore](https://prettier.io/docs/en/ignore.html).
-- <b>.ecosystem.config.js</b>. Process Manage at runtime. See [PM2 Docs](https://pm2.keymetrics.io/).
+## Funcionalitats
+- Funcionalitats en `Login`:
+    - Revisió de nom d'usuari.
+    - Desencriptat de contrasenya i confirmació.
+    - Asignació de token a localStorage.
+    - Obtenció de dades d'usuari per recuperar el seu nickname.
+    - Hipervincle a `signup` en cas d'usuari nou.
 
-### Import project for use with Visual Studio Code
+- Funcionalitats en `Signup`:
+    - Revisió d'usuari i nickname per asegurar que son registre únic.
+    - Comparació de contrasenya i confirmació de contrasenya.
+    - Encriptat de contrasenya.
+    - Registre d'usuari amb contrasenya encriptada.
+    - Push automátic a chat en cas d'usuari nou.
 
-Follow the steps below:
-* Clone the project from the Github Platform. Execute:
-  ```
-  git clone [url project]
-  ```
-* Open the project downloaded.
-  ![Open Project](img/VSC_open.png)
-
-
-### Import project for use with WebStorm
-
-Follow the steps below:
-* Clone the project from the Github Platform. Execute:
-  ```
-  git clone [url project]
-  ```
-* Open the project downloaded.
-![Open Project](img/webstorm_open.png)
+- Funcionalitats en `Chat`
+    - Enviar i rebre missatges
+    - Crear sales personals (no es creen per tots els usuaris)
+    - Eliminar sales creades
+    - Veure usuaris conectats
+    - Rebre avisos  quan un usuari es conecti o desconecti de la sala
+    - Rebre els missatges escrits en una sala durant la seva absencia quan torni a entrar-hi.
+    - Desconexió amb esborrat de token
 
 
-### Utilities
 
-* [Node Developers Guide](https://nodejs.dev/learn)
-* **.gitignore file** configuration. See [Official Docs](https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files).
-* **Git branches**. See [Official Docs](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
