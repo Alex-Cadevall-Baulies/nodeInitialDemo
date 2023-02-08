@@ -1,1 +1,23 @@
-console.log('Hello World');
+const express = require('express');
+const app = express();
+const port = 8080;
+const globalRouter = require('./routes/global.js')
+
+app.use(express.json());
+app.use(express.urlencoded({extended:false}))
+app.use(globalRouter)
+
+const sequelize = require('./database');
+
+sequelize
+    .sync({alter: true})
+    .then(console.log(`database connected`))
+    .catch((err) => console.log(err))
+
+const playerdb = require('./models/playerdb')
+const throwdb = require('./models/throwdb')
+    
+playerdb.hasMany(throwdb)
+throwdb.belongsTo(playerdb)
+
+app.listen(port, () => console.log(`Running on http://localhost:${port}`))
